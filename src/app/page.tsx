@@ -1,101 +1,84 @@
-import Image from "next/image";
+'use client'
+import React, { useState } from 'react';
+import CameraSVG from './public/assets/camera.svg';
+import Send from './public/assets/send.svg';
+import Electricbulb from './public/assets/electricbulb.svg';
+
+interface ButtonData {
+  label: string;
+  isClicked: boolean;
+}
+
+interface ButtonProps {
+  button: ButtonData;
+  onClick: () => void;
+}
+
+const Button: React.FC<ButtonProps> = ({ button, onClick }) => (
+  <button
+    className={`rounded-full p-3 mr-2 mb-3  ${button.isClicked ? 'border-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-100 via-blue-300 to-blue-500 font-bold' : ''}`}
+    onClick={onClick}
+    style={{  backgroundColor: 'rgba(169, 169, 169, 0.5)' }}
+  >
+    {button.label}
+  </button>
+);
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [buttonData, setButtonData] = useState<ButtonData[]>([
+    { label: '작품 소개', isClicked: false },
+    { label: '작가 소개', isClicked: false },
+    { label: '작품 배경', isClicked: false },
+    { label: '관람 포인트', isClicked: false },
+    { label: '미술사', isClicked: false },
+  ]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const handleClick = (index: number) => {
+    setButtonData(prevButtonData => {
+      return prevButtonData.map((button, i) => {
+        if (i === index) {
+          return { ...button, isClicked: !button.isClicked };
+        }
+        return button;
+      });
+    });
+  };
+
+  return (
+    <>
+      <div className="flex flex-col items-center justify-center min-h-screen p-4">
+        <div>
+          <h1 className="text-3xl text-transparent bg-clip-text bg-gradient-to-r from-blue-100 via-blue-300 to-blue-500 font-bold">
+            <span className="block">궁금한 작품이 있나요?</span>
+            <span className="block mt-4">제게 물어보세요!</span>
+          </h1>
+          <h3 className="mt-10 text-gray-500 text-left font-bold">원하는 작품 설명을 선택해주세요</h3>
+          <div className="mt-2">
+            {buttonData.map((button, index) => (
+              <Button key={index} button={button} onClick={() => handleClick(index)} />
+            ))}
+          </div>
+          <div className='bg-gray-700 rounded-[25px]'>
+            <textarea 
+              className='bg-gray-700 rounded-[25px] md:rounded-lg w-full h-28 p-4'
+              placeholder="작품 이름과 작가 이름을 알려주세요."
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <div className='flex justify-between p-4'>
+              <button className=''>
+                <CameraSVG />
+              </button>
+              <button className='rounded-lg p-1 bg-gray-800'>
+                <Send />
+              </button>
+            </div>
+          </div>
+          <div>
+            <button className='rounded-full p-3 mt-4 bg-gray-800 flex'>
+            <Electricbulb /> '모네부터 앤디워홀'을 관람하시나요?
+              </button>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+    </>
   );
 }
