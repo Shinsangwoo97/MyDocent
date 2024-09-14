@@ -48,9 +48,9 @@ export default function Home() {
     <>
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
         <div>
-            <h1 className="w-[375px] h-[106px] p-[16px 20px 16px 20px] text-[26px] text-transparent bg-clip-text bg-gradient-to-r from-blue-100 via-blue-300 to-blue-500 font-bold">
+          <h1 className="text-3xl text-transparent bg-clip-text bg-gradient-to-r from-blue-100 via-blue-300 to-blue-500 font-bold">
             <span className="block">궁금한 작품이 있나요?</span>
-            <span className="block">지금 질문해 보세요</span>
+            <span className="block mt-4">제게 물어보세요!</span>
           </h1>
           <h3 className="mt-10 text-gray-500 text-left font-bold">원하는 작품 설명을 선택해주세요</h3>
           <div className="mt-2">

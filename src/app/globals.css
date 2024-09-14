@@ -25,3 +25,8 @@ body {
     text-wrap: balance;
   }
 }
+
+@font-face {
+  font-family: 'WantedSans';
+  src: url('/fonts/WantedSans.ttf');
+}
