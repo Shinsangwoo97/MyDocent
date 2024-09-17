@@ -21,8 +21,8 @@ const Footer: React.FC = () => {
         </button>
       ) : (
         <div className='flex w-[272px] h-[56px] rounded-[40px] p-[6px] gap-[10px] bg-[#1B1E1F]'>
-          <button className='w-[78px] h-[44px] rounded-[30px] gap-[10px] bg-[#2C3032] mr-2'>내 정보</button>
-          <button className='w-[122px] h-[44px] rounded-[30px] gap-[10px] bg-[#2C3032] mr-2'>감상 남긴 작품</button>
+          <button className='w-[78px] h-[44px] rounded-[30px] gap-[10px] bg-[#2C3032] mr-1'>내 정보</button>
+          <button className='w-[122px] h-[44px] rounded-[30px] gap-[10px] bg-[#2C3032] mr-1'>감상 남긴 작품</button>
           <button 
             className='w-[44px] h-[44px] rounded-[40px] p-[10px] bg-[#2C3032]' 
             onClick={handleToggle} // 다시 클릭 시 상태를 반전시켜 Info 버튼으로 돌아감
