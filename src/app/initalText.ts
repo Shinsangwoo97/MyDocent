@@ -36,7 +36,7 @@ const initialText = `
 `;
 
 // 문자열을 파싱하여 객체로 반환하는 함수
-function parseInitialText(text: string) {
+function ParseInitialText(text: string) {
   // 각 부분을 정규 표현식으로 추출
   const authorMatch = text.match(/작가:\s*(.*)/);
   const artworkMatch = text.match(/작품:\s*(.*)/);
@@ -53,6 +53,6 @@ function parseInitialText(text: string) {
 }
 
 // 객체로 변환한 예시
-const parsedText = parseInitialText(initialText);
+const parsedText = ParseInitialText(initialText);
 
 export default parsedText;

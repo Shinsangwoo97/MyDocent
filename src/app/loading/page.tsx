@@ -1,12 +1,17 @@
 'use client'
 import Loginlogo from '../public/logo/loginlogo.svg'
 import Backbutton from '../public/logo/backbutton.svg'
+import { useRouter } from 'next/navigation';
 
 export default function Loading() {
+  const router = useRouter();
  
   return (
     <>
-      <div className='w-[375px] h-[56px] p-[16px_20px] gap-1'>
+      <div 
+      className='w-[375px] h-[56px] p-[16px_20px] gap-1'
+      onClick={() => {router.push('/')}}
+      >
           <Backbutton />
       </div>
       <div className="grid place-items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-['WantedSans'] text-center">

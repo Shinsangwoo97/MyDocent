@@ -7,7 +7,8 @@ import Shape from '../public/logo/shape.svg'
 import Play from '../public/button/Playbutton.svg'
 import Pause from '../public/button/Pausebutton.svg'
 import Image from 'next/image';
-import X from '../public/logo/x.svg'
+import Close from '../public/logo/close.svg'; // X 컴포넌트
+
 
 interface TextSegment {
   text: string;
@@ -113,6 +114,8 @@ const handleReviewClick = () => {
 
 const handleChooseClick = (e: any) => { 
   setReview(e);
+  setOpenReview(false);
+  setIsReviewClick(false);
 }
 
 // 컴포넌트가 언마운트될 때 정리
@@ -164,23 +167,23 @@ useEffect(() => {
       <div className='absolute fixed bottom-0 inset-x-0 z-10'>
         <div className='flex justify-end'>
           {openReview? 
-          <div className='w-[133px] h-[164px] top-[453px] left-[167px] rounded-[30px] border border-[#2C3032] p-[10px] gap-[6px] bg-[#0C0D0F]'>
+            <div className='w-[133px] h-[164px] top-[453px] left-[167px] rounded-[30px] border border-[#2C3032] p-[10px] gap-[6px] bg-[#0C0D0F]'>
             <button 
             onClick={() => handleChooseClick(1)}
-            className='w-[113px] h-[44px] rounded-[30px] p-[10px_12px] gap-[4px] bg-[#1B1E1F] font-normal text-[16px] leading-[24px] tracking-[-1%]'>
+            className={`font-normal w-[113px] h-[44px] rounded-[30px] p-[10px_12px] gap-[4px] font-normal text-[16px] leading-[24px] tracking-[-1%] ${review === 1 ? 'bg-[#FFFFFF] text-[#000000]' : 'bg-[#1B1E1F]'}`}>
               🤩 흥미
               </button> 
             <button 
             onClick={() => handleChooseClick(2)}
-            className='my-1 w-[113px] h-[44px] rounded-[30px] p-[10px_12px] gap-[4px] bg-[#1B1E1F] font-normal text-[16px] leading-[24px] tracking-[-1%]'>
+            className={`my-1 font-normal w-[113px] h-[44px] rounded-[30px] p-[10px_12px] gap-[4px] font-normal text-[16px] leading-[24px] tracking-[-1%] ${review === 2 ? 'bg-[#FFFFFF] text-[#000000]' : 'bg-[#1B1E1F]'}`}>
               🙂 좋아요
               </button> 
             <button 
             onClick={() => handleChooseClick(3)}
-            className='w-[113px] h-[44px] rounded-[30px] p-[10px_12px] gap-[4px] bg-[#1B1E1F] font-normal text-[16px] leading-[24px] tracking-[-1%]'>
+            className={`font-normal w-[113px] h-[44px] rounded-[30px] p-[10px_12px] gap-[4px] font-normal text-[16px] leading-[24px] tracking-[-1%] ${review === 3 ? 'bg-[#FFFFFF] text-[#000000]' : 'bg-[#1B1E1F]'}`}>
               😓 아쉬움
             </button> 
-          </div>
+            </div>
           : ""
           }
           {/* 배속 및 구절 제어 버튼 */}
@@ -200,7 +203,7 @@ useEffect(() => {
               onClick={handleReviewClick}
               className={isReviewClick ? 'flex justify-center items-center w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]' : 'flex justify-center items-center w-[44px] h-[44px] rounded-[40px] p-[10px] gap-1 bg-[#151718]'}>
                 {isReviewClick ? 
-                <X />
+                <Close />
                 :
                 <Shape />
                 }
@@ -224,19 +227,19 @@ useEffect(() => {
             <div className='flex justify-center items-center h-full my-2'>
               <div className='flex w-[335px] h-[55px] gap-[14px]'>
                 <Image 
-                src="/picture/fd.jpg" 
+                src="" 
                 width={54}  // 넓이와 높이를 지정
                 height={54}
                 alt="작품 이미지"
                 className='w-[54px] h-[54px] rounded-[10px] blur-sm'
                 />
-                 <Image 
-                src="/picture/fd.jpg" 
+                 {/* <Image 
+                src="" 
                 width={54}  // 넓이와 높이를 지정
                 height={54}
                 alt="작품 이미지"
                 className='w-[54px] h-[54px] rounded-[10px]'
-                />
+                /> */}   
                 <div>
                   <div className='w-[201px] h-[29px] font-semibold text-[18px] leading-[28.9px] tracking-[-1%] text-[#FFFFFF]'>
                   {parsedText.artwork}
@@ -258,7 +261,10 @@ useEffect(() => {
               </div>
             </div>
             <div className='flex justify-center items-center h-full'>
-              <button className='mb-7 w-[335px] h-[48px] rounded-[30px] p-[12px] gap-[8px] bg-[#1B1E1F]'>
+              <button 
+              className='mb-7 w-[335px] h-[48px] rounded-[30px] p-[12px] gap-[8px] bg-[#1B1E1F]'
+              onClick={() => handleGoHome()}  
+              >
                 새로운 작품 검색
               </button>
             </div>

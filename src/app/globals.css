@@ -28,5 +28,5 @@ body {
 
 @font-face {
   font-family: 'WantedSans';
-  src: url('/fonts/WantedSans.ttf');
+  src: url('./fonts/WantedSans.ttf');
 }

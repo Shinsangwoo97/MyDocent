@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Scan from './public/logo/scan.svg'
 import Send from './public/logo/send.svg'
 import Onsend from './public/logo/onsend.svg'
+import Footer from './components/Footer';
 
 interface ButtonData {
   label: string;
@@ -79,8 +80,7 @@ export default function Home() {
           <div className='w-[335px] h-[164px] rounded-[20px] p-[16px] gap-[6px] bg-[#151718]'>
       <textarea
         className='w-[303px] h-[82px] bg-[#151718] placeholder-[#484C52]'
-        placeholder={`작품 이름과 작가 이름을 알려주세요! 
-예) 해바라기, 고흐`}
+        placeholder={`작품 이름과 작가 이름을 알려주세요!\n예) 해바라기, 고흐`}
         value={text}
         onChange={handleTextChange}
       />
@@ -104,7 +104,10 @@ export default function Home() {
             <Electricbulb /> '모네부터 앤디워홀'을 관람하시나요?
               </button> */}
           </div>
-        </div> 
+        </div>
+      </div>
+      <div className='fixed bottom-7 right-3'>
+            <Footer />
       </div>
     </>
   );
