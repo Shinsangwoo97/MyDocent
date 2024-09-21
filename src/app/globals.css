@@ -30,3 +30,14 @@ body {
   font-family: 'WantedSans';
   src: url('./fonts/WantedSans.ttf');
 }
+
+@layer utilities {
+  @keyframes textShine {
+    0% {
+      background-position: 100% 00%;
+    }
+    100% {
+      background-position: 0% 100%;
+    }
+  }
+}

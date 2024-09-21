@@ -1,9 +1,7 @@
 'use client'
 import React, { useState } from 'react';
-import Scan from './public/logo/scan.svg'
-import Send from './public/logo/send.svg'
-import Onsend from './public/logo/onsend.svg'
 import Footer from './components/Footer';
+import Image from 'next/image';
 
 interface ButtonData {
   label: string;
@@ -17,7 +15,7 @@ interface ButtonProps {
 
 const Button: React.FC<ButtonProps> = ({ button, onClick }) => (
   <button
-    className={`mt-2 mr-2 rounded-[20px] border-[1px] p-[8px_16px] gap-[10px]  ${button.isClicked ? '' : 'bg-[#1B1E1F] border border-[#2C3032]'}`}
+    className={`mt-2 mr-2 rounded-[20px] border-[1px] p-[8px_16px] gap-[10px]  ${button.isClicked ? 'border border-[#8EBBFF] rounded-full text-[#8D99FF]' : 'bg-[#1B1E1F] border border-[#2C3032]'}`}
     onClick={onClick}
     style={button.isClicked ? {
       background: '#1B1E1F',
@@ -33,6 +31,8 @@ export default function Home() {
   const [text, setText] = useState<string>(''); // 입력된 텍스트를 관리하는 상태
   const [isSendClicked, setIsSendClicked] = useState<boolean>(false); // 버튼 상태 관리
 
+  let name = '수연';
+
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);
     setIsSendClicked(e.target.value.length > 0); // 텍스트가 있을 때만 버튼을 Onsend로 바꿈
@@ -44,13 +44,14 @@ export default function Home() {
   };
 
   const [buttonData, setButtonData] = useState<ButtonData[]>([
-    { label: '작품 소개', isClicked: false },
+    { label: '작품 소개', isClicked: true },
     { label: '작가 소개', isClicked: false },
     { label: '작품 배경', isClicked: false },
     { label: '관람 포인트', isClicked: false },
     { label: '미술사', isClicked: false },
   ]);
   
+  console.log('buttonData:', buttonData[2].isClicked);
 
   const handleClick = (index: number) => {
     setButtonData(prevButtonData => {
@@ -67,8 +68,8 @@ export default function Home() {
     <>
       <div className="grid place-items-left absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-['WantedSans']">
         <div>
-            <h1 className="font-semibold text-[26px] leading-[36.92px] tracking--1 bg-gradient-to-r from-[#A4D3FF] via-[#A5AEFF] to-[#A4D3FF] text-transparent bg-clip-text">
-              <span className="block">궁금한 작품이 있나요?</span>
+            <h1 className="font-semibold text-[26px] leading-[36.9px] tracking-[-0.26px] my-2 bg-gradient-to-r from-[#8EBBFF] via-[#8D99FF] to-[#A4B8FF] bg-clip-text text-transparent bg-[length:500%_auto] animate-[textShine_4s_ease-out_infinite]">
+              <span className="block">{name}님 궁금한 작품이 있나요?</span>
               <span className="block">지금 질문해 보세요</span> 
             </h1>
           <h3 className="mt-6 font-normal text-[15px] leading-[21px] tracking--1 text-[#787B83]">원하는 설명 키워드를 모두 골라주세요</h3>
@@ -85,15 +86,34 @@ export default function Home() {
         onChange={handleTextChange}
       />
       <div className='flex justify-between'>
-        <button className=''>
-          <Scan />
+        <button className='w-[44px] h-[44px] rounded-[40px] p-[10px] gap-[10px] bg-[#1B1E1F]'>
+        <Image 
+            src="/button/scan.png" 
+            alt="Loading Logo" 
+            width={24} 
+            height={24} 
+            />
         </button>
         <button
-          className=''
+          className={`w-[44px] h-[44px] rounded-[40px] p-[10px] gap-[10px] ${isSendClicked ? 'bg-gradient-to-r from-[#8EBBFF] via-[#8D99FF] to-[#A4B8FF] shadow-custom-1 shadow-custom-2' : 'bg-[#1B1E1F]'}`}
           onClick={handleSendClick}
           disabled={!isSendClicked} // 텍스트가 없을 때 버튼 비활성화
         >
-          {isSendClicked ? <Onsend /> : <Send />}
+          {isSendClicked ? 
+          <Image 
+          src="/button/send.png" 
+          alt="Loading Logo" 
+          width={24} 
+          height={24} 
+          />
+          : 
+          <Image 
+          src="/button/send.png" 
+          alt="Loading Logo" 
+          width={24} 
+          height={24} 
+          />
+          }
         </button>
       </div>
     </div>

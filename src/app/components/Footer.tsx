@@ -1,7 +1,6 @@
 "use client";
 import { useState } from 'react';
-import Info from '../public/logo/info.svg'; // Info 컴포넌트
-import Close from '../public/logo/close.svg'; // X 컴포넌트
+import Image from 'next/image';
 import {useRouter} from 'next/navigation';
 
 const Footer: React.FC = () => {
@@ -19,7 +18,12 @@ const Footer: React.FC = () => {
           className='w-[56px] h-[56px] rounded-full bg-[#1B1E1F]' 
           onClick={handleToggle}
         >
-          <Info />
+          <Image 
+           src="/logo/info.svg"
+           alt="Info"
+           width={64}
+           height={64}
+          />
         </button>
       ) : (
         <div className='flex w-[272px] h-[56px] rounded-[40px] p-[6px] gap-[10px] bg-[#1B1E1F]'>
@@ -39,7 +43,12 @@ const Footer: React.FC = () => {
             className='w-[44px] h-[44px] rounded-[40px] p-[10px] bg-[#2C3032]' 
             onClick={handleToggle} // 다시 클릭 시 상태를 반전시켜 Info 버튼으로 돌아감
           >
-            <Close />
+            <Image 
+           src="/logo/close.svg"
+           alt="Info"
+           width={32}
+           height={32}
+          />
           </button>
         </div>
       )}

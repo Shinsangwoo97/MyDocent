@@ -4,8 +4,6 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React, { useCallback, useMemo, useState } from 'react'
 
-import Backbutton from '../public/logo/backbutton.svg'
-
 interface EmotionButton {
   id: string
   label: string
@@ -99,7 +97,12 @@ const Favorites: React.FC = () => {
         {/* 뒤로가기, 수정 버튼 */}
       <div className='flex w-full h-[56px] p-[16px_20px] justify-between items-center'>
         <button className="flex items-center" onClick={goBack}>
-          <Backbutton />
+        <Image 
+            src="/logo/backbutton.svg" 
+            alt="Loading Logo" 
+            width={32} 
+            height={32} 
+            />
         </button>
         <button className='font-semibold text-[16px] leading-[24px] tracking-[-1px]'>
           수정

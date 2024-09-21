@@ -1,9 +1,5 @@
 'use client'
-
-import LoginLogo from "../public/logo/LoginLogo.svg";
-import Kakaologin from "../public/kakao/kakaologin.jpg";
-import Kakaologin1 from "../public/kakao/kakaologin1.png";
-import Kakaologin2 from "../public/kakao/kakaologin2.svg";
+import Image from 'next/image';
 
 
 export default function Login() {
@@ -21,11 +17,20 @@ export default function Login() {
         <div className="font-normal text-[16px] leading-[24px] tracking--1 content-center">AI 도슨트의 맞춤형 해설로</div>
         <div className="font-normal text-[16px] leading-[24px] tracking--1 content-center">간편한 작품 관람을 시작해 보세요.</div>
         <div className="my-28">
-        <LoginLogo />
         </div>
-         <button
-        onClick={kakao_login}>
-         <Kakaologin2 />
+         <button 
+        className='w-[335px] h-auto rounded-[30px] p-[14px_20px] gap-6 bg-[#FFFFFF] text-[#171B22] font-semibold'
+        onClick={kakao_login}> 
+        <div className='flex items-center justify-center'>
+          <Image 
+          src="/kakao/kakao.png"
+          width={24}
+          height={24}
+          alt="Kakao Logo"
+          className='mr-1'
+          /> 
+          <span className='font-semibold text-[16px] leading-[24px] tracking--1'>카카오로 시작하기</span>
+        </div>
         </button>
         <div className="text-[15px] mt-4 text-[#484C52]">
         로그인(가입) 시 이용약관 및 개인정보 취급 방침에 동의하는 것으로 간주됩니다.
