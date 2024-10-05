@@ -12,6 +12,12 @@ export default function Loading() {
       className='w-[375px] h-[56px] p-[16px_20px] gap-1'
       onClick={() => {router.push('/')}}
       >
+        <Image 
+          src="/logo/backbutton.svg" 
+          alt="Loading Logo" 
+          width={24} 
+          height={24} 
+        />
       </div>
       <div className="grid place-items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-['WantedSans'] text-center">
           <div className="font-normal text-[16px] leading-[24px] tracking--1 bg-gradient-to-r from-[#A4D3FF] via-[#A5AEFF] to-[#A4D3FF] text-transparent bg-clip-text">
@@ -23,7 +29,7 @@ export default function Loading() {
           </div>
             <div className='mt-16'>
             <Image 
-            src="/image/1.jpg" 
+            src="/gif/motion.gif" 
             alt="Loading Logo" 
             width={210} 
             height={210} 

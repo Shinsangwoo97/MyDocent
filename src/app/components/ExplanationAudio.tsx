@@ -24,9 +24,10 @@ interface ReviewButtonsProps {
 
 const ReviewButtons: React.FC<ReviewButtonsProps> = ({ openReview, review, handleChooseClick }) => {
   const buttons: ButtonData[] = [
-    { id: 1, emoji: '🤩', text: '흥미로워요' },
-    { id: 2, emoji: '🙂', text: '좋아요' },
-    { id: 3, emoji: '😓', text: '아쉬움' },
+    { id: 1, emoji: '🤩', text: '재미있어요' },
+    { id: 2, emoji: '🫢', text: '놀라워요' },
+    { id: 3, emoji: '🙂', text: '좋아요' },
+    { id: 4, emoji: '😓', text: '아쉬워요' },
   ];
 
   if (!openReview) return null;
@@ -143,8 +144,13 @@ export default function TTSWithScroll() {
 
   const handleScrollChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
-    window.speechSynthesis.cancel();
     setCurrentSegment(value);
+    
+    // 구간 이동 시 자동 재생 로직 추가
+    if (isPlaying) {
+      window.speechSynthesis.cancel();
+      playSegmentFromIndex(value, rate);
+    }
   };
 
   return (
@@ -181,61 +187,84 @@ export default function TTSWithScroll() {
         </div>
       </div>
       <div className='absolute fixed bottom-0 inset-x-0 z-10'>
-        <div className='flex justify-end'>
-          <ReviewButtons
-            openReview={openReview}
-            review={review}
-            handleChooseClick={handleChooseClick}
-          />
-          <div className='h-[178px] p-[0px_16px_14px_20px] flex justify-end'>
-            <div className='w-[44px] h-[164px] gap-[16px]'>
-              <button className='w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]'>
-                <Image 
-                  src="/logo/pen.svg" 
-                  alt="Loading Logo" 
-                  width={32} 
-                  height={32} 
+        <div className=''>
+          <div className='flex justify-end'>
+            <ReviewButtons
+                  openReview={openReview}
+                  review={review}
+                  handleChooseClick={handleChooseClick}
                 />
-              </button>
-              <div className='my-4 flex justify-center w-[44px] h-[44px] rounded-[40px] p-[10px] gap-1 bg-[#151718] font-semibold text-[12px]'>
-                {rate === 1 ? (
-                  <button onClick={() => setPlaybackRate(2)}>1.0</button>
-                ) : (
-                  <button onClick={() => setPlaybackRate(1)}>2.0</button>
-                )}
+          </div>
+          <div className='justify-end'>
+            <div className='h-[178px] p-[0px_16px_14px_20px] flex justify-end'>
+              <div className='w-[44px] h-[164px] gap-[16px]'>
+                <button className='w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]'>
+                  <Image 
+                    src="/logo/pen.svg" 
+                    alt="Loading Logo" 
+                    width={32} 
+                    height={32} 
+                  />
+                </button>
+                <div className='my-4 flex justify-center w-[44px] h-[44px] rounded-[40px] p-[10px] gap-1 bg-[#151718] font-semibold text-[12px]'>
+                  {rate === 1 ? (
+                    <button onClick={() => setPlaybackRate(2)}>1.0</button>
+                  ) : (
+                    <button onClick={() => setPlaybackRate(1)}>2.0</button>
+                  )}
+                </div>
+                <button 
+                  onClick={handleReviewClick}
+                  className={isReviewClick ? 'flex justify-center items-center w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]' : 'flex justify-center items-center w-[44px] h-[44px] rounded-[40px] p-[10px] gap-1 bg-[#151718]'}
+                >
+                  {isReviewClick ? 
+                    <Image 
+                      src="/logo/close.svg" 
+                      alt="Loading Logo" 
+                      width={32} 
+                      height={32} 
+                    />
+                    :
+                    <Image 
+                      src="/logo/shape.svg" 
+                      alt="Loading Logo" 
+                      width={32} 
+                      height={32} 
+                    />
+                  }
+                </button>
               </div>
-              <button 
-                onClick={handleReviewClick}
-                className={isReviewClick ? 'flex justify-center items-center w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]' : 'flex justify-center items-center w-[44px] h-[44px] rounded-[40px] p-[10px] gap-1 bg-[#151718]'}
-              >
-                {isReviewClick ? 
-                  <Image 
-                    src="/logo/close.svg" 
-                    alt="Loading Logo" 
-                    width={32} 
-                    height={32} 
-                  />
-                  :
-                  <Image 
-                    src="/logo/shape.svg" 
-                    alt="Loading Logo" 
-                    width={32} 
-                    height={32} 
-                  />
-                }
-              </button>
             </div>
           </div>
         </div>
         <div className='bg-[#0C0D0F]'>
-          <input
-            type="range"
-            min="0"
-            max={segments.length - 1}
-            value={currentSegment}
-            onChange={handleScrollChange}
-            className='w-full'
-          />
+        <input
+          type="range"
+          min="0"
+          max={segments.length - 1}
+          value={currentSegment}
+          onChange={handleScrollChange}
+          className="w-full h-[4px] rounded-lg appearance-none"
+          style={{
+            background: `linear-gradient(to right, white 0%, white ${(currentSegment / (segments.length - 1)) * 100}%, #484C52 ${(currentSegment / (segments.length - 1)) * 100}%, #484C52 100%)`,
+          }}
+        />
+        <style jsx>{`
+          input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 0;
+            height: 0;
+            background-color: transparent;
+          }
+
+          input[type="range"]::-moz-range-thumb {
+            appearance: none;
+            width: 0;
+            height: 0;
+            background-color: transparent;
+          }
+        `}</style>
           <div className='flex justify-center items-center h-full my-2'>
             <div className='flex w-[335px] h-[55px] gap-[14px]'>
               <Image 

@@ -3,9 +3,9 @@ import Image from 'next/image';
 
 
 export default function Login() {
+  const KAKAO_AUTH_URL = `https:/kauth.kakao.com/oauth/authorize?client_id=ca16d4396dd9fb54c856c85b57bbbaca&redirect_uri=http://localhost:3000/kakao/callback&response_type=code`;
  
-  const kakao_login = async () => {
-    const KAKAO_AUTH_URL = `https:/kauth.kakao.com/oauth/authorize?client_id=c7c24feb0cd407c889411dd192a5b7a8&redirect_uri=http://localhost:3000/kakao/callback&response_type=code`;
+  const kakao_login = () => {
     window.location.href = KAKAO_AUTH_URL;
   };
 
