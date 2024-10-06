@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Image from 'next/image';
-import NameChangeClose from '../components/modal/NameChangeClose';
+import NameChangeClose from './modal/NameChangeClose';
 
 interface BottomSheetProps {
   onClose: () => void; // 바텀 시트 닫기
