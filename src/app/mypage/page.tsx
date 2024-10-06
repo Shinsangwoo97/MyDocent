@@ -1,8 +1,8 @@
 'use client'
-
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import BottomSheet from '../components/BottomSheet';
 
 // ActionButton 컴포넌트의 props 타입 정의
 interface ActionButtonProps {
@@ -30,14 +30,16 @@ const ActionButton: React.FC<ActionButtonProps> = ({ src, alt, text, onClick }) 
 
 export default function Mypage() {
   const router = useRouter();
-
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 바텀 시트 상태 관리
+  const [name, setName] = useState(''); // 변경된 이름 저장
+  
   const goBack = useCallback(() => {
     router.push('/');
   }, [router]);
 
-  // 버튼 클릭 핸들러 함수
+  // 이름 변경 버튼 클릭 시 바텀 시트 열림
   const handleChangeName = () => {
-    alert('이름 변경 클릭');
+    setIsBottomSheetOpen(true);
   };
 
   const handleInquiry = () => {
@@ -64,6 +66,16 @@ export default function Mypage() {
     { src: '/mypage/terms-24.svg', text: '로그아웃', alt: 'Logout Icon', onClick: handleLogout },
     { src: '/mypage/access-24.png', text: '회원탈퇴', alt: 'Access Icon', onClick: handleDeleteAccount },
   ];
+
+   // 바텀 시트에서 입력한 이름을 받는 함수
+   const handleNameSubmit = (newName: string) => {
+    setName(newName); // 이름 업데이트
+  };
+
+  // 바텀 시트 닫기 함수
+  const handleBottomSheetClose = () => {
+    setIsBottomSheetOpen(false);
+  };
 
   return (
     <>
@@ -95,6 +107,13 @@ export default function Mypage() {
             />
           ))}
         </div>
+        {/* 바텀 시트가 열렸을 때만 표시 */}
+        {isBottomSheetOpen && (
+          <BottomSheet
+            onClose={handleBottomSheetClose}
+            onSubmit={handleNameSubmit}
+          />
+        )}
       </div>
     </>
   );
