@@ -2,7 +2,7 @@
 import React, { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import BottomSheet from '../components/BottomSheet';
+import BottomSheet from '../../components/BottomSheet';
 
 // ActionButton 컴포넌트의 props 타입 정의
 interface ActionButtonProps {

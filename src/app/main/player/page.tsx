@@ -1,5 +1,5 @@
 'use client'
-import Audioplayer from '../components/ExplanationAudio'
+import Audioplayer from '../../components/ExplanationAudio'
 export default function Player() {
  
   return (
