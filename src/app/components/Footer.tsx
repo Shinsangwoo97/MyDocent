@@ -29,13 +29,13 @@ const Footer: React.FC = () => {
         <div className='flex w-[272px] h-[56px] rounded-[40px] p-[6px] gap-[10px] bg-[#1B1E1F]'>
             <button 
             className='w-[78px] h-[44px] rounded-[30px] gap-[10px] bg-[#2C3032]'
-            onClick={() => router.push('/mypage')}
+            onClick={() => router.push('/main/mypage')}
             >
             내 정보
             </button>
           <button 
           className='w-[122px] h-[44px] rounded-[30px] gap-[10px] bg-[#2C3032]'
-          onClick={() => router.push('/favorites')}
+          onClick={() => router.push('/main/favorites')}
           >
             감상한 작품
           </button>

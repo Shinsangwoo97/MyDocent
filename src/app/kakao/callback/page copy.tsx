@@ -3,7 +3,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { API } from "@/lib/API";
+import { API, fetcher } from "@/lib/API";
 
 export default function Home() {
   const [code, setCode] = useState<string | null>(null);
@@ -39,33 +39,23 @@ export default function Home() {
         // 비동기 요청을 보내는 함수
         const sendKakaoLoginRequest = async () => {
           try {
-            const res = await fetch(`${API}/auth/login/kakao`, { // 서버 URL)
-              method: 'POST', // POST 요청
-              headers: {
-                'Content-Type': 'application/json' // 명시적으로 JSON임을 알림
-              },
-              body: JSON.stringify({ code: code }) // Request body로 JSON 전송
-            });
-            if (!res.ok) {
-              throw new Error(`HTTP error! status: ${res.status}`);
-            }
-      
-            const result = await res.json();
-            console.log(result);
-            console.log(result.access_token);
-            console.log(result.refresh_token);
-            console.log(result.user_id);
-            localStorage.setItem('access_token', result.access_token);
-            localStorage.setItem('refresh_token', result.refresh_token);
-            localStorage.setItem('userid', result.user_id);
+            const res = await axios.post(
+              `http://127.0.0.1:8000/api/auth/login/kakao`, // 서버 URL
+              { code: code }, // Request body로 JSON 전송
+              {
+                headers: {
+                  'Content-Type': 'application/json' // 명시적으로 JSON임을 알림
+                }
+              }
+            );
+            console.log("응답 결과:", res.data); // 서버 응답 데이터 출력
           } catch (error) {
             console.error("로그인 요청 중 오류 발생:", error);
-          } finally {
-            router.push('/'); // 메인 페이지로 이동
           }
         };
 
         sendKakaoLoginRequest(); // 함수 호출
+        router.push('/'); // 메인 페이지로 이동
       }
     }
   }, [useruuid, localuuid, code]); // 의존성 배열에 필요한 값들 추가

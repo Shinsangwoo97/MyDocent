@@ -1,7 +1,10 @@
 'use client'
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Footer from './components/Footer';
 import Image from 'next/image';
+import { API, fetcher } from "@/lib/API";
+import { UserType } from "@/types/user";
+import { useRouter } from 'next/navigation';
 
 interface ButtonData {
   label: string;
@@ -30,8 +33,9 @@ export default function Home() {
 
   const [text, setText] = useState<string>(''); // 입력된 텍스트를 관리하는 상태
   const [isSendClicked, setIsSendClicked] = useState<boolean>(false); // 버튼 상태 관리
-
-  let name = '수연';
+  const [userData, setUserData] = useState<UserType | null>(null);
+  const [nickname, setNickName] = useState<string>(''); // 기본값 설정
+  const router = useRouter();
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);
@@ -64,12 +68,52 @@ export default function Home() {
     });
   };
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const access_token = localStorage.getItem('access_token');
+        const userid = localStorage.getItem('userid');
+        
+        if (!access_token || !userid) {
+          router.push('/main/login');
+          return;
+        }
+
+        const res = await fetch(
+          `${API}/auth/users/me/${userid}`,
+          {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${access_token}`
+            },
+          }
+        );
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const result: UserType = await res.json();
+        setUserData(result);
+        localStorage.setItem('nickname', result.nickname);
+        // API 응답에서 이름을 가져와서 설정
+        if (result.nickname) {
+          setNickName(result.nickname);
+        }
+      } catch (error) {
+        router.push('/main/login');
+      }
+    };
+
+    fetchUserData();
+  }, []); // 빈 배열을 넣어 컴포넌트가 마운트될 때 한 번만 실행
+
   return (
     <>
       <div className="grid place-items-left absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-['WantedSans']">
         <div>
             <h1 className="font-semibold text-[26px] leading-[36.9px] tracking-[-0.26px] my-2 bg-gradient-to-r from-[#8EBBFF] via-[#8D99FF] to-[#A4B8FF] bg-clip-text text-transparent bg-[length:500%_auto] animate-[textShine_4s_ease-out_infinite]">
-              <span className="block">{name}님 궁금한 작품이 있나요?</span>
+              <span className="block">{nickname}님 궁금한 작품이 있나요?</span>
               <span className="block">지금 질문해 보세요</span> 
             </h1>
           <h3 className="mt-6 font-normal text-[15px] leading-[21px] tracking--1 text-[#787B83]">원하는 설명 키워드를 모두 골라주세요</h3>

@@ -32,7 +32,14 @@ const getKakaoAuthUrl = (uuid: string) => {
       <p className="font-normal text-[16px] leading-[24px] tracking-tight">AI 도슨트의 맞춤형 해설로</p>
       <p className="font-normal text-[16px] leading-[24px] tracking-tight">간편한 작품 관람을 시작해 보세요.</p>
       
-      <div className="my-28"></div>
+      <div className="my-24">
+        <Image 
+          src="/logo/loginlogo.png"
+          width={210}
+          height={210}
+          alt="Logo"
+        />
+      </div>
       
       <button 
         className="w-[335px] h-auto rounded-[30px] p-4 bg-white text-[#171B22] font-semibold"
