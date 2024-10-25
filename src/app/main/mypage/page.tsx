@@ -67,8 +67,8 @@ export default function Mypage() {
     { src: '/mypage/access-24.png', text: '회원탈퇴', alt: 'Access Icon', onClick: handleDeleteAccount },
   ];
 
-   // 바텀 시트에서 입력한 이름을 받는 함수
-   const handleNameSubmit = (newName: string) => {
+  // 바텀 시트에서 입력한 이름을 받는 함수
+  const handleNameSubmit = (newName: string) => {
     setName(newName); // 이름 업데이트
   };
 
@@ -95,6 +95,13 @@ export default function Mypage() {
         <div className="w-[375px] h-[69px] p-[16px_20px] gap-[10px]">
           <h1 className="w-[335px] h-[37px] font-semibold text-[26px] leading-[36.92px] tracking--1">내 정보</h1>
         </div>
+
+        {/* 변경된 이름 표시 */}
+        {name && (
+          <div className="w-[375px] p-[16px_20px]">
+            <p className="text-[20px] font-medium">{name} 님 반가워요!</p>
+          </div>
+        )}
 
         <div className="w-[375px] h-[286px] p-[16px_20px] gap-[10px]">
           {buttons.map((button, index) => (

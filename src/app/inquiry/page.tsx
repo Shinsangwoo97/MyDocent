@@ -7,7 +7,6 @@ export default function Inquiry() {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림 상태 관리
   const [email, setEmail] = useState('ssw2570@naver.com'); // 이메일 저장
   const [inquiryDetails, setInquiryDetails] = useState(''); // 문의 내용 저장
-  const [isSendClicked, setIsSendClicked] = useState<boolean>(false); // 버튼 상태 관리
 
   const handleCloseButton = () => { 
     setIsModalOpen(true); // 닫기 버튼 클릭 시 모달 열기

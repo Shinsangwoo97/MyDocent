@@ -36,6 +36,7 @@ const EmotionButton: React.FC<EmotionButton & { isSelected: boolean; onClick: ()
     </button>
   )
 )
+EmotionButton.displayName = 'EmotionButton';
 
 const ArtworkItem: React.FC<Artwork> = React.memo(({ title, artist, emotion, imageUrl }) => (
   <div className='mb-4 w-full h-[120px] rounded-[20px] p-[10px] gap-[12px] bg-[#151718]'>
@@ -59,6 +60,7 @@ const ArtworkItem: React.FC<Artwork> = React.memo(({ title, artist, emotion, ima
     </div>
   </div>
 ))
+ArtworkItem.displayName = 'ArtworkItem';
 
 const Favorites: React.FC = () => {
   const router = useRouter()

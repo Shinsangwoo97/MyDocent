@@ -1,6 +1,5 @@
 'use client';
 
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { API } from "@/lib/API";
@@ -68,7 +67,7 @@ export default function Home() {
         sendKakaoLoginRequest(); // 함수 호출
       }
     }
-  }, [useruuid, localuuid, code]); // 의존성 배열에 필요한 값들 추가
+  }, [useruuid, localuuid, code, router]); // 의존성 배열에 필요한 값들 추가
 
   return <div></div>;
 }

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Footer from './components/Footer';
 import Image from 'next/image';
-import { API, fetcher } from "@/lib/API";
+import { API } from "@/lib/API";
 import { UserType } from "@/types/user";
 import { useRouter } from 'next/navigation';
 
@@ -33,7 +33,6 @@ export default function Home() {
 
   const [text, setText] = useState<string>(''); // 입력된 텍스트를 관리하는 상태
   const [isSendClicked, setIsSendClicked] = useState<boolean>(false); // 버튼 상태 관리
-  const [userData, setUserData] = useState<UserType | null>(null);
   const [nickname, setNickName] = useState<string>(''); // 기본값 설정
   const router = useRouter();
 
@@ -94,7 +93,6 @@ export default function Home() {
         }
 
         const result: UserType = await res.json();
-        setUserData(result);
         localStorage.setItem('nickname', result.nickname);
         // API 응답에서 이름을 가져와서 설정
         if (result.nickname) {
@@ -106,7 +104,7 @@ export default function Home() {
     };
 
     fetchUserData();
-  }, []); // 빈 배열을 넣어 컴포넌트가 마운트될 때 한 번만 실행
+  }, [router]); // 빈 배열을 넣어 컴포넌트가 마운트될 때 한 번만 실행
 
   return (
     <>

@@ -47,6 +47,7 @@ const ReviewButtons: React.FC<ReviewButtonsProps> = ({ openReview, review, handl
     </div>
   );
 };
+ReviewButtons.displayName = 'ReviewButtons';  // displayName 추가
 
 export default function TTSWithScroll() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -84,7 +85,7 @@ export default function TTSWithScroll() {
     if (segmentRefs.current[currentSegment]) {
       segmentRefs.current[currentSegment]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }, [currentSegment, isPlaying, rate]);
+  }, [currentSegment, isPlaying, rate, segments]);
 
   const setPlaybackRate = (newRate: number) => {
     setRate(newRate);
@@ -316,3 +317,5 @@ export default function TTSWithScroll() {
     </div>
   );
 }
+
+TTSWithScroll.displayName = 'TTSWithScroll';  // displayName 추가
