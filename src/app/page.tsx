@@ -42,7 +42,7 @@ export default function Home() {
   };
 
   const handleSendClick = () => {
-    const clickedButtonLabels = buttonData.filter(button => button.isClicked).map(button => button.label);
+    // const clickedButtonLabels = buttonData.filter(button => button.isClicked).map(button => button.label);
     console.log('텍스트 저장:', text); // 입력된 텍스트를 저장하거나 처리
     // 여기서 서버에 저장하는 로직을 추가할 수 있음
   };
