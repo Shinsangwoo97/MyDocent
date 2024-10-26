@@ -9,6 +9,7 @@ export default function Home() {
   const [useruuid, setUseruuid] = useState<string | null>(null);
   const [localuuid, setLocaluuid] = useState<string | null>(null);
   const router = useRouter();
+  const stage = process.env.NEXT_PUBLIC_STAGE_TYPE;
 
   // 브라우저 환경에서만 실행되도록 useEffect 사용
   useEffect(() => {
@@ -38,7 +39,7 @@ export default function Home() {
         // 비동기 요청을 보내는 함수
         const sendKakaoLoginRequest = async () => {
           try {
-            const res = await fetch(`${API}/auth/login/kakao`, { // 서버 URL)
+            const res = await fetch(`${API}/auth/login/kakao?stage=${stage}`, { // 서버 URL)
               method: 'POST', // POST 요청
               headers: {
                 'Content-Type': 'application/json' // 명시적으로 JSON임을 알림

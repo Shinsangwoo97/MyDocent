@@ -11,8 +11,6 @@ export default function Login() {
   const responseType = process.env.NEXT_PUBLIC_RESPONSE_TYPE;
   const clientSecret = process.env.NEXT_PUBLIC_CLIENT_SECRET;
   
-  console.log(clientId, redirectUri, responseType);
-
   // 카카오 인증 URL 생성 함수
 const getKakaoAuthUrl = (uuid: string) => {
   return `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&client_secret=${clientSecret}&redirect_uri=${redirectUri}&response_type=${responseType}&state=${uuid}`;
