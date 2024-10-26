@@ -42,13 +42,14 @@ export default function Home() {
   };
 
   const handleSendClick = () => {
+    const clickedButtonLabels = buttonData.filter(button => button.isClicked).map(button => button.label);
     console.log('텍스트 저장:', text); // 입력된 텍스트를 저장하거나 처리
     // 여기서 서버에 저장하는 로직을 추가할 수 있음
   };
 
   const [buttonData, setButtonData] = useState<ButtonData[]>([
     { label: '작품 소개', isClicked: true },
-    { label: '작가 소개', isClicked: false },
+    { label: '작가 소개', isClicked: true },
     { label: '작품 배경', isClicked: false },
     { label: '관람 포인트', isClicked: false },
     { label: '미술사', isClicked: false },
@@ -66,7 +67,7 @@ export default function Home() {
       });
     });
   };
-
+  
   useEffect(() => {
     const fetchUserData = async () => {
       try {

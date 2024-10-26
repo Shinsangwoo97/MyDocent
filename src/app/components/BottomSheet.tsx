@@ -40,7 +40,7 @@ function BottomSheet({
   }
 
   const handleApiCall = async () => {
- 
+    
     try {
       const res = await fetch(
         `${API}/auth/users/me/${userid}`, 
@@ -63,6 +63,7 @@ function BottomSheet({
       const data = await res.json();
       console.log('name update response:', data);
       onSubmit(name);
+      onClose();
     } catch (error) {
       console.error('Error updating name:', error);
     }
@@ -75,6 +76,10 @@ function BottomSheet({
   const handleCloseModal = () => {
     setIsModalOpen(false);
     onClose();
+  };
+
+  const handleCancelModal = () => {
+    setIsModalOpen(false);
   };
 
   useEffect(() => {
@@ -125,7 +130,7 @@ function BottomSheet({
           
         </div>
         {/* 모달 창 */}
-        {isModalOpen && <NameChangeClose onClose={handleCloseModal} />}
+        {isModalOpen && <NameChangeClose onClose={handleCloseModal} onCancel={handleCancelModal} />}
       </div>
   );
 }

@@ -32,7 +32,8 @@ export default function Mypage() {
   const router = useRouter();
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 바텀 시트 상태 관리
   const [name, setName] = useState(''); // 변경된 이름 저장
-  
+  const [showAlert, setShowAlert] = useState(false); // 알림 상태 관리
+
   const goBack = useCallback(() => {
     router.push('/');
   }, [router]);
@@ -70,6 +71,9 @@ export default function Mypage() {
   // 바텀 시트에서 입력한 이름을 받는 함수
   const handleNameSubmit = (newName: string) => {
     setName(newName); // 이름 업데이트
+     // 이름 변경 로직 실행 후
+     setShowAlert(true); // 알림 상태를 true로 설정
+     setTimeout(() => setShowAlert(false), 3000); // 3초 후 알림 숨기기
   };
 
   // 바텀 시트 닫기 함수
@@ -79,6 +83,13 @@ export default function Mypage() {
 
   return (
     <>
+    {/* 이름 수정 알림 */}
+    {showAlert && (
+        <div className="absolute min-w-[166px] h-[44px] top-[74px] left-[104.5px] rounded-[30px] border border-[#2C3032] p-[10px_16px] gap-[6px] bg-[#1B1E1F] text-[#FFFFFF]">
+          이름을 수정했어요
+        </div>
+      )}
+    {/* 뒤로가기 버튼 */}
       <button 
         className="w-[375px] h-[69px] p-[16px_20px] gap-1"
         onClick={goBack}

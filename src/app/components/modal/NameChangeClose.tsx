@@ -1,4 +1,4 @@
-const NameChangeClose: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+const NameChangeClose: React.FC<{ onClose: () => void, onCancel: () => void }> = ({ onClose, onCancel }) => {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-[#0C0D0F] font-['WantedSans']">
         <div className="w-[335px] h-[168px] top-[322.5px] left-[20px] rounded-[20px] p-[20px] gap-[20px] bg-[#151718]">
@@ -12,7 +12,7 @@ const NameChangeClose: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           </div>
           <div className="flex w-[295px] h-[52px] gap-[10px] justify-between">
             <button
-              onClick={onClose}
+              onClick={onCancel}
               className="w-[142.5px] h-[52px] rounded-[30px] p-[14px_20px] gap-[6px] bg-[#1B1E1F] text-[#787B83]"
             >
               취소
