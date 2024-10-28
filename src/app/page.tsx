@@ -75,7 +75,7 @@ export default function Home() {
         const userid = localStorage.getItem('userid');
         
         if (!access_token || !userid) {
-          router.push('/main/login');
+          // router.push('/main/login');
           return;
         }
 

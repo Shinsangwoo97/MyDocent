@@ -1,9 +1,36 @@
 'use client'
 export default function Player() {
- 
+
+  // const isEqual = 9007199254740992 === 9007199254740993;
+  //   console.log(isEqual); // true
+
+  // const key = Symbol('key');
+  // const key2 = Symbol('key');
+
+  // console.log(key === key2); // false
+  // console.log(Symbol.for('hello') === Symbol.for('hello')); // true
+
+  let hello = 'hello world';
+  let hi = hello;
+
+  console.log(hello === hi); // true
+
+  var a = {
+    name: 'hello'
+  };
+  
+
+  var b = {
+    name: 'hello'
+  };
+  
+
+  // console.log(a === b); // false
+  // console.log(a.name === b.name); // true
+
   return (
     <>
-    <body className="bg-[#0C0D0F] flex justify-center items-center h-screen m-0">
+    {/* <body className="bg-[#0C0D0F] flex justify-center items-center h-screen m-0">
   <div className="flex flex-col p-[60px_20px]">
     <h1 className="text-[26px] font-medium leading-[36.9px] tracking-[-0.26px] my-2 bg-gradient-to-r from-[#8D99FF] via-[#91BDFF] to-[#8D99FF] bg-clip-text text-transparent bg-[length:500%_auto] animate-[textShine_4s_ease-out_infinite]">
       수연님 궁금한 작품이 있나요?\n지금 질문해 보세요
@@ -20,8 +47,8 @@ export default function Player() {
       </div>
     </div>
   </div>
-</body>
-
+</body> */}
+dd
     </>
   );
 }
