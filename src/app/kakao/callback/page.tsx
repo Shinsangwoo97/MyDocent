@@ -9,7 +9,6 @@ export default function Home() {
   const [useruuid, setUseruuid] = useState<string | null>(null);
   const [localuuid, setLocaluuid] = useState<string | null>(null);
   const router = useRouter();
-  const stage = process.env.NEXT_PUBLIC_STAGE_TYPE;
 
   // 브라우저 환경에서만 실행되도록 useEffect 사용
   useEffect(() => {
@@ -39,7 +38,7 @@ export default function Home() {
         // 비동기 요청을 보내는 함수
         const sendKakaoLoginRequest = async () => {
           try {
-            const res = await fetch(`${API}/auth/login/kakao?stage=${stage}`, { // 서버 URL)
+            const res = await fetch(`/api/auth/login`, { // 서버 URL)
               method: 'POST', // POST 요청
               headers: {
                 'Content-Type': 'application/json' // 명시적으로 JSON임을 알림
@@ -53,11 +52,11 @@ export default function Home() {
             const result = await res.json();
             console.log(result);
             console.log(result.access_token);
-            console.log(result.refresh_token);
-            console.log(result.user_id);
+            // console.log(result.refresh_token);
+            // console.log(result.user_id);
             localStorage.setItem('access_token', result.access_token);
-            localStorage.setItem('refresh_token', result.refresh_token);
-            localStorage.setItem('userid', result.user_id);
+            // localStorage.setItem('refresh_token', result.refresh_token);
+            // localStorage.setItem('userid', result.user_id);
           } catch (error) {
             console.error("로그인 요청 중 오류 발생:", error);
           } finally {
