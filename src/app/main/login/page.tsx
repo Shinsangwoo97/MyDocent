@@ -26,7 +26,7 @@ const getKakaoAuthUrl = (uuid: string) => {
 
   return (
     <div className="text-center grid place-items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-['WantedSans']">
-      <h1 className="font-semibold text-[26px] leading-[36.92px] tracking-tight">마이 도슨트</h1>
+      <h1 className="font-semibold tex t-[26px] leading-[36.92px] tracking-tight">마이 도슨트</h1>
       <p className="font-normal text-[16px] leading-[24px] tracking-tight">AI 도슨트의 맞춤형 해설로</p>
       <p className="font-normal text-[16px] leading-[24px] tracking-tight">간편한 작품 관람을 시작해 보세요.</p>
       

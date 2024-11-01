@@ -80,7 +80,7 @@ export default function Home() {
         }
 
         const res = await fetch(
-          `${API}/auth/users/me/${userid}`,
+          `/api/auth/users/me/${userid}`,
           {
             method: 'GET',
             headers: {
@@ -109,11 +109,11 @@ export default function Home() {
 
   return (
     <>
-      <div className="grid place-items-left absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-['WantedSans']">
+      <div className="grid place-items-left absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-['WantedSans'] bg-[#0C0D0F]">
         <div>
             <h1 className="font-semibold text-[26px] leading-[36.9px] tracking-[-0.26px] my-2 bg-gradient-to-r from-[#8EBBFF] via-[#8D99FF] to-[#A4B8FF] bg-clip-text text-transparent bg-[length:500%_auto] animate-[textShine_4s_ease-out_infinite]">
               <span className="block">{nickname}님 궁금한 작품이 있나요?</span>
-              <span className="block">지금 질문해 보세요</span> 
+              <span className="block">지금 질문해 보세요</span>  
             </h1>
           <h3 className="mt-6 font-normal text-[15px] leading-[21px] tracking--1 text-[#787B83]">원하는 설명 키워드를 모두 골라주세요</h3>
           <div className="mt-3 mb-5 border-solid">
