@@ -48,7 +48,7 @@ export default function Mypage() {
   };
 
   const handleTerms = () => {
-    alert('이용약관 클릭');
+    router.push('/main/mypage/termsofuse');
   };
 
   const handleLogout = () => {
