@@ -125,19 +125,19 @@ export default function Home() {
   }, [router]); // 빈 배열을 넣어 컴포넌트가 마운트될 때 한 번만 실행
 
   return (
-    <div>
+    <div className='font-wanted'>
       {warningMessage && ( // 경고 메시지 조건부 렌더링
-        <div className="absolute top-0 p-[10px_16px] w-[264px] h-[44px] rounded-[30px] border border-[#1B1E1F] text-center text-red-500 flex items-center">
+        <div className="absolute top-[74px] left-1/2 -translate-x-1/2 p-[10px_26px] rounded-[30px] border border-[#522e35] flex items-center justify-center whitespace-nowrap bg-[#32191e]">
           <Image 
-            src="/button/scan.png" 
+            src="/button/warning.svg" 
             alt="Loading Logo" 
-            width={24} 
-            height={24} 
+            width={14} 
+            height={14} 
           />
-          <span className="ml-2">{warningMessage}</span> {/* 경고 메시지 텍스트 */}
+          <span className="ml-2 text-[#ffd2e5]">{warningMessage}</span>
         </div>
       )}
-      <div className="grid place-items-left absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-['WantedSans'] bg-[#0C0D0F]">
+      <div className="grid place-items-left absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#0C0D0F]">
         <div>
             <h1 className="font-semibold text-[26px] leading-[36.9px] tracking-[-0.26px] my-2 bg-gradient-to-r from-[#8EBBFF] via-[#8D99FF] to-[#A4B8FF] bg-clip-text text-transparent bg-[length:500%_auto] animate-[textShine_4s_ease-out_infinite]">
               <span className="block">{nickname}님 궁금한 작품이 있나요?</span>
