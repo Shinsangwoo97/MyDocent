@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import pool from '@/lib/db';
+import { RowDataPacket } from 'mysql2';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { user_id, keyword, text } = req.body;
@@ -22,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       VALUES (?, ?, ?, 0, NOW())
     `;
     try {
-      const [result] = await pool.query(sql, [user_id, keywordString, text]) as any[];
+      const [result] = await pool.query<RowDataPacket[]>(sql, [user_id, keywordString, text]);
       console.log("DB 저장 결과:", result);
     } catch (e) {
       console.error("DB 조회 중 오류:", e);

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { API } from "@/lib/API";
 
 export default function Home() {
   const [code, setCode] = useState<string | null>(null);

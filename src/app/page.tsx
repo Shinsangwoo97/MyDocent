@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import Footer from './components/Footer';
 import Image from 'next/image';
-import { API } from "@/lib/API";
 import { UserType } from "@/types/user";
 import { useRouter } from 'next/navigation';
 

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import pool from '@/lib/db';
+import { RowDataPacket } from 'mysql2';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { code } = req.body;
@@ -56,7 +57,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         WHERE email = ?
       `;
       try {
-        const [result] = await pool.query(sql, [email]) as any[]; // 결과를 any 배열로 형변환
+        const [result] = await pool.query<RowDataPacket[]>(sql, [email]); // 결과를 any 배열로 형변환
 
         // 사용자 존재 확인 후 로직 처리
         if (result.length > 0) {
