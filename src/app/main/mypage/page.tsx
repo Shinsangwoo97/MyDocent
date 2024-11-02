@@ -127,10 +127,16 @@ export default function Mypage() {
         </div>
         {/* 바텀 시트가 열렸을 때만 표시 */}
         {isBottomSheetOpen && (
-          <BottomSheet
-            onClose={handleBottomSheetClose}
-            onSubmit={handleNameSubmit}
-          />
+          <>
+            <div
+              className="fixed inset-0 bg-black opacity-80" // 배경 어둡게
+              onClick={handleBottomSheetClose} // 클릭 시 바텀 시트 닫히게
+            />
+            <BottomSheet
+              onClose={handleBottomSheetClose}
+              onSubmit={handleNameSubmit}
+            />
+          </>
         )}
       </div>
     </>
