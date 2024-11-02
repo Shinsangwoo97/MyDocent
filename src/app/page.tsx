@@ -34,6 +34,7 @@ export default function Home() {
   const [isSendClicked, setIsSendClicked] = useState<boolean>(false); // 버튼 상태 관리
   const [nickname, setNickName] = useState<string>(''); // 기본값 설정
   const [warningMessage, setWarningMessage] = useState<string>(''); // 키워드 한 개 이상 선택 경고 메시지 상태
+  const [isTextAreaFocused, setIsTextAreaFocused] = useState<boolean>(false); //사용자가 입력할 때 밑에 문구 생기게 하기 위함
   const router = useRouter();
 
   //2초 후에 경고 메시지를 초기화하기 위함
@@ -155,6 +156,8 @@ export default function Home() {
         placeholder={`작품 이름과 작가 이름을 알려주세요!\n예) 해바라기, 고흐`}
         value={text}
         onChange={handleTextChange}
+        onFocus={() => setIsTextAreaFocused(true)}
+        onBlur={() => setIsTextAreaFocused(false)}
       />
       <div className='flex justify-between'>
         <button className='w-[44px] h-[44px] rounded-[40px] p-[10px] gap-[10px] bg-[#1B1E1F]'>
@@ -188,13 +191,17 @@ export default function Home() {
         </button>
       </div>
     </div>
-          <div>
-            
+
+          <div className='mt-2'>
+            {isTextAreaFocused && (
+              <span className='text-[#787b83] text-[15px]'>작품과 작가 정보를 모두 입력해주세요!</span>
+            )}
             {/* MVP 이후 2차 기능 추가 */}
             {/* <button className='rounded-full p-3 mt-4 bg-gray-800 flex'>
             <Electricbulb /> '모네부터 앤디워홀'을 관람하시나요?
               </button> */}
           </div>
+          
         </div>
       </div>
       <div className='fixed bottom-7 right-3'>
