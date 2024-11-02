@@ -25,7 +25,7 @@ interface ReviewButtonsProps {
 const ReviewButtons: React.FC<ReviewButtonsProps> = ({ openReview, review, handleChooseClick }) => {
   const buttons: ButtonData[] = [
     { id: 1, emoji: '🤩', text: '재미있어요' },
-    { id: 2, emoji: '🫢', text: '놀라워요' },
+    { id: 2, emoji: '😮', text: '놀라워요' },
     { id: 3, emoji: '🙂', text: '좋아요' },
     { id: 4, emoji: '😓', text: '아쉬워요' },
   ];
@@ -50,10 +50,13 @@ const ReviewButtons: React.FC<ReviewButtonsProps> = ({ openReview, review, handl
 ReviewButtons.displayName = 'ReviewButtons';  // displayName 추가
 
 export default function TTSWithScroll() {
+  const [count, setCount] = useState(0)
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSegment, setCurrentSegment] = useState<number>(0);
   const [segments, setSegments] = useState<TextSegment[]>([]);
-  const [rate, setRate] = useState<number>(1);
+  const [rateIndex, setRateIndex] = useState(0); // 속도 배열의 인덱스
+  const playbackRates = [1, 1.25, 1.5, 1.75, 2]; // 속도 배열
   const synthRef = useRef<SpeechSynthesisUtterance | null>(null);
   const segmentRefs = useRef<(HTMLParagraphElement | null)[]>([]);
   const router = useRouter();
@@ -61,9 +64,21 @@ export default function TTSWithScroll() {
   const [isReviewClick, setIsReviewClick] = useState(false);
   const [openReview, setOpenReview] = useState(false);
   const [review, setReview] = useState<number | null>(null);
-   
+
   const handleGoHome = () => {
     router.push('/');
+  };
+
+  const currentRate = playbackRates[rateIndex]; // 현재 재생 속도
+
+  const togglePlaybackRate = () => { // 재생 속도 순환 함수
+    const nextIndex = (rateIndex + 1) % playbackRates.length;
+    setRateIndex(nextIndex);
+
+    if (isPlaying) {
+      window.speechSynthesis.cancel();
+      playSegmentFromIndex(currentSegment, playbackRates[nextIndex]);
+    }
   };
 
   useEffect(() => {
@@ -78,22 +93,14 @@ export default function TTSWithScroll() {
     if (isPlaying && synthRef.current) {
       const utterance = synthRef.current;
       utterance.text = segments[currentSegment]?.text || '';
-      utterance.rate = rate;
+      utterance.rate = currentRate;
       window.speechSynthesis.speak(utterance);
     }
 
     if (segmentRefs.current[currentSegment]) {
       segmentRefs.current[currentSegment]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-  }, [currentSegment, isPlaying, rate, segments]);
-
-  const setPlaybackRate = (newRate: number) => {
-    setRate(newRate);
-    if (isPlaying) {
-      window.speechSynthesis.cancel();
-      playSegmentFromIndex(currentSegment, newRate);
-    }
-  };
+  }, [currentSegment, isPlaying, currentRate, segments]);
 
   const playSegmentFromIndex = (index: number, rate: number) => {
     if (index < segments.length) {
@@ -120,7 +127,7 @@ export default function TTSWithScroll() {
       setIsPlaying(false);
       currentUtteranceRef.current = null;
     } else {
-      playSegmentFromIndex(currentSegment, rate);
+      playSegmentFromIndex(currentSegment, currentRate);
       setIsPlaying(true);
     }
   };
@@ -150,16 +157,16 @@ export default function TTSWithScroll() {
     // 구간 이동 시 자동 재생 로직 추가
     if (isPlaying) {
       window.speechSynthesis.cancel();
-      playSegmentFromIndex(value, rate);
+      playSegmentFromIndex(value, currentRate);
     }
   };
 
   return (
-    <div>
-      <button 
+    <div className='font-wanted'>
+      
+      <button
         className='w-[375px] h-[56px] p-[16px_20px]'
-        onClick={handleGoHome}
-      >
+        onClick={handleGoHome}>
         <Image 
           src="/logo/playerlogo.svg" 
           alt="Loading Logo" 
@@ -167,8 +174,9 @@ export default function TTSWithScroll() {
           height={32} 
         />
       </button>
+
       <div className='px-5'>
-        <div className='z-0 h-auto max-h-[600px] overflow-y-auto'>
+        <div className='h-auto max-h-[600px] overflow-y-auto'>
           <h1>{parsedText.artwork}</h1>
           <div className={`mt-1 font-normal text-[20px] leading-[32px] tracking-[-0.02em]`}>
             {segments.map((segment, index) => (
@@ -187,85 +195,84 @@ export default function TTSWithScroll() {
           </div>
         </div>
       </div>
+
       <div className='absolute fixed bottom-0 inset-x-0 z-10'>
-        <div className=''>
-          <div className='flex justify-end'>
-            <ReviewButtons
-                  openReview={openReview}
-                  review={review}
-                  handleChooseClick={handleChooseClick}
+        <div className='flex justify-end items-center'> {/* ReviewButtons를 버튼 그룹 옆에 배치 */}
+          <ReviewButtons
+            openReview={openReview}
+            review={review}
+            handleChooseClick={handleChooseClick}
+          />
+
+          <div className='h-[178px] p-[0px_16px_14px_20px] flex items-center'>
+            <div className='flex flex-col w-[44px] h-[164px]'>
+              <button className='w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]'>
+                <Image 
+                  src="/logo/pen.svg" 
+                  alt="Loading Logo" 
+                  width={32} 
+                  height={32} 
                 />
-          </div>
-          <div className='justify-end'>
-            <div className='h-[178px] p-[0px_16px_14px_20px] flex justify-end'>
-              <div className='w-[44px] h-[164px] gap-[16px]'>
-                <button className='w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]'>
+              </button>
+              
+              <div className='my-4 flex justify-center w-[44px] h-[44px] rounded-[40px] p-[10px] gap-1 bg-[#151718] font-semibold text-[12px]'>
+                <button onClick={togglePlaybackRate}>
+                  {playbackRates[rateIndex]}
+                </button>
+              </div>
+
+              <button 
+                onClick={handleReviewClick}
+                className={isReviewClick ? 'flex justify-center items-center w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]' : 'flex justify-center items-center w-[44px] h-[44px] rounded-[40px] p-[10px] gap-1 bg-[#151718]'}
+              >
+                {isReviewClick ? 
                   <Image 
-                    src="/logo/pen.svg" 
+                    src="/logo/close.svg" 
                     alt="Loading Logo" 
                     width={32} 
                     height={32} 
                   />
-                </button>
-                <div className='my-4 flex justify-center w-[44px] h-[44px] rounded-[40px] p-[10px] gap-1 bg-[#151718] font-semibold text-[12px]'>
-                  {rate === 1 ? (
-                    <button onClick={() => setPlaybackRate(2)}>1.0</button>
-                  ) : (
-                    <button onClick={() => setPlaybackRate(1)}>2.0</button>
-                  )}
-                </div>
-                <button 
-                  onClick={handleReviewClick}
-                  className={isReviewClick ? 'flex justify-center items-center w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]' : 'flex justify-center items-center w-[44px] h-[44px] rounded-[40px] p-[10px] gap-1 bg-[#151718]'}
-                >
-                  {isReviewClick ? 
-                    <Image 
-                      src="/logo/close.svg" 
-                      alt="Loading Logo" 
-                      width={32} 
-                      height={32} 
-                    />
-                    :
-                    <Image 
-                      src="/logo/shape.svg" 
-                      alt="Loading Logo" 
-                      width={32} 
-                      height={32} 
-                    />
-                  }
-                </button>
-              </div>
+                  :
+                  <Image 
+                    src="/logo/shape.svg" 
+                    alt="Loading Logo" 
+                    width={32} 
+                    height={32} 
+                  />
+                }
+              </button>
             </div>
           </div>
         </div>
-        <div className='bg-[#0C0D0F]'>
-        <input
-          type="range"
-          min="0"
-          max={segments.length - 1}
-          value={currentSegment}
-          onChange={handleScrollChange}
-          className="w-full h-[4px] rounded-lg appearance-none"
-          style={{
-            background: `linear-gradient(to right, white 0%, white ${(currentSegment / (segments.length - 1)) * 100}%, #484C52 ${(currentSegment / (segments.length - 1)) * 100}%, #484C52 100%)`,
-          }}
-        />
-        <style jsx>{`
-          input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 0;
-            height: 0;
-            background-color: transparent;
-          }
 
-          input[type="range"]::-moz-range-thumb {
-            appearance: none;
-            width: 0;
-            height: 0;
-            background-color: transparent;
-          }
-        `}</style>
+        <div className='bg-[#0C0D0F]'>
+          <input
+            type="range"
+            min="0"
+            max={segments.length - 1}
+            value={currentSegment}
+            onChange={handleScrollChange}
+            className="w-full h-[4px] rounded-lg appearance-none"
+            style={{
+              background: `linear-gradient(to right, white 0%, white ${(currentSegment / (segments.length - 1)) * 100}%, #484C52 ${(currentSegment / (segments.length - 1)) * 100}%, #484C52 100%)`,
+            }}/>
+              <style jsx>{`
+                input[type="range"]::-webkit-slider-thumb {
+                  -webkit-appearance: none;
+                  appearance: none;
+                  width: 0;
+                  height: 0;
+                  background-color: transparent;
+                }
+
+                input[type="range"]::-moz-range-thumb {
+                  appearance: none;
+                  width: 0;
+                  height: 0;
+                  background-color: transparent;
+                }
+              `}</style>
+
           <div className='flex justify-center items-center h-full my-2'>
             <div className='flex w-[335px] h-[55px] gap-[14px]'>
               <Image 
@@ -275,6 +282,7 @@ export default function TTSWithScroll() {
                 alt="작품 이미지"
                 className='w-[54px] h-[54px] rounded-[10px] blur-sm'
               />
+              
               <div>
                 <div className='w-[201px] h-[29px] font-semibold text-[18px] leading-[28.9px] tracking-[-1%] text-[#FFFFFF]'>
                   {parsedText.artwork}
@@ -283,6 +291,7 @@ export default function TTSWithScroll() {
                   파블로 피카소
                 </div>
               </div>
+              
               <div className='mt-2'>
                 <button onClick={handlePlayPause}>
                   {isPlaying ? 
@@ -290,25 +299,23 @@ export default function TTSWithScroll() {
                       src="/button/Pausebutton.svg" 
                       alt="Loading Logo" 
                       width={32} 
-                      height={32} 
-                    />
+                      height={32}/>
                     :
                       <Image 
                       src="/button/Playbutton.svg" 
                       alt="Loading Logo" 
                       width={32} 
-                      height={32} 
-                    />
+                      height={32}/>
                   }
                 </button>
               </div>
             </div>
           </div>
+
           <div className='flex justify-center items-center h-full'>
             <button 
               className='mb-7 w-[335px] h-[48px] rounded-[30px] p-[12px] gap-[8px] bg-[#1B1E1F]'
-              onClick={handleGoHome}  
-            >
+              onClick={handleGoHome}>
               새로운 작품 검색
             </button>
           </div>
