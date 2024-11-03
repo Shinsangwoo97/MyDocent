@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import BottomSheet from '../../components/BottomSheet';
+import LogoutClose from '@/components/modal/LogoutClose';
 
 // ActionButton 컴포넌트의 props 타입 정의
 interface ActionButtonProps {
@@ -33,6 +34,7 @@ export default function Mypage() {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 바텀 시트 상태 관리
   const [name, setName] = useState(''); // 변경된 이름 저장
   const [showAlert, setShowAlert] = useState(false); // 알림 상태 관리
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false); // 로그아웃 모달 상태 관리
 
   const goBack = useCallback(() => {
     router.push('/');
@@ -48,11 +50,11 @@ export default function Mypage() {
   };
 
   const handleTerms = () => {
-    alert('이용약관 클릭');
+    router.push('/main/mypage/termsofuse');
   };
 
   const handleLogout = () => {
-    alert('로그아웃 클릭');
+    setIsLogoutModalOpen(true);
   };
 
   const handleDeleteAccount = () => {
@@ -79,6 +81,11 @@ export default function Mypage() {
   // 바텀 시트 닫기 함수
   const handleBottomSheetClose = () => {
     setIsBottomSheetOpen(false);
+  };
+
+  // 로그아웃 모달 닫기 함수
+  const handleLogoutCancel = () => {
+    setIsLogoutModalOpen(false);
   };
 
   return (
@@ -127,10 +134,29 @@ export default function Mypage() {
         </div>
         {/* 바텀 시트가 열렸을 때만 표시 */}
         {isBottomSheetOpen && (
-          <BottomSheet
-            onClose={handleBottomSheetClose}
-            onSubmit={handleNameSubmit}
-          />
+          <>
+            <div
+              className="fixed inset-0 bg-black opacity-80" // 배경 어둡게
+              onClick={handleBottomSheetClose} // 클릭 시 바텀 시트 닫히게
+            />
+            <BottomSheet
+              onClose={handleBottomSheetClose}
+              onSubmit={handleNameSubmit}
+            />
+          </>
+        )}
+
+        {isLogoutModalOpen && (
+          <>
+            <div
+              className="fixed inset-0 bg-black opacity-80"
+              onClick={handleLogoutCancel}
+            />
+            <LogoutClose 
+              onClose={() => setIsLogoutModalOpen(false)} //로그아웃 완료 수정
+              onCancel={handleLogoutCancel}
+            />
+          </>
         )}
       </div>
     </>

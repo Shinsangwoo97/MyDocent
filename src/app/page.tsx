@@ -33,7 +33,20 @@ export default function Home() {
   const [text, setText] = useState<string>(''); // 입력된 텍스트를 관리하는 상태
   const [isSendClicked, setIsSendClicked] = useState<boolean>(false); // 버튼 상태 관리
   const [nickname, setNickName] = useState<string>(''); // 기본값 설정
+  const [warningMessage, setWarningMessage] = useState<string>(''); // 키워드 한 개 이상 선택 경고 메시지 상태
+  const [isTextAreaFocused, setIsTextAreaFocused] = useState<boolean>(false); //사용자가 입력할 때 밑에 문구 생기게 하기 위함
   const router = useRouter();
+
+  //2초 후에 경고 메시지를 초기화하기 위함
+  useEffect(() => {
+    if (warningMessage) {
+      const timer = setTimeout(() => {
+        setWarningMessage('');
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [warningMessage]);
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);
@@ -41,6 +54,12 @@ export default function Home() {
   };
 
   const handleSendClick = () => {
+    // 경고 메시지 설정
+    if (buttonData.every(button => !button.isClicked)) {
+      setWarningMessage('키워드를 한 개 이상 선택해주세요!');
+      return;
+    }
+
     // const clickedButtonLabels = buttonData.filter(button => button.isClicked).map(button => button.label);
     console.log('텍스트 저장:', text); // 입력된 텍스트를 저장하거나 처리
     // 여기서 서버에 저장하는 로직을 추가할 수 있음
@@ -107,8 +126,19 @@ export default function Home() {
   }, [router]); // 빈 배열을 넣어 컴포넌트가 마운트될 때 한 번만 실행
 
   return (
-    <>
-      <div className="grid place-items-left absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-['WantedSans'] bg-[#0C0D0F]">
+    <div className='font-wanted'>
+      {warningMessage && ( // 경고 메시지 조건부 렌더링
+        <div className="absolute top-[74px] left-1/2 -translate-x-1/2 p-[10px_26px] rounded-[30px] border border-[#522e35] flex items-center justify-center whitespace-nowrap bg-[#32191e]">
+          <Image 
+            src="/button/warning.svg" 
+            alt="Loading Logo" 
+            width={14} 
+            height={14} 
+          />
+          <span className="ml-2 text-[#ffd2e5]">{warningMessage}</span>
+        </div>
+      )}
+      <div className="grid place-items-left absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#0C0D0F]">
         <div>
             <h1 className="font-semibold text-[26px] leading-[36.9px] tracking-[-0.26px] my-2 bg-gradient-to-r from-[#8EBBFF] via-[#8D99FF] to-[#A4B8FF] bg-clip-text text-transparent bg-[length:500%_auto] animate-[textShine_4s_ease-out_infinite]">
               <span className="block">{nickname}님 궁금한 작품이 있나요?</span>
@@ -126,6 +156,8 @@ export default function Home() {
         placeholder={`작품 이름과 작가 이름을 알려주세요!\n예) 해바라기, 고흐`}
         value={text}
         onChange={handleTextChange}
+        onFocus={() => setIsTextAreaFocused(true)}
+        onBlur={() => setIsTextAreaFocused(false)}
       />
       <div className='flex justify-between'>
         <button className='w-[44px] h-[44px] rounded-[40px] p-[10px] gap-[10px] bg-[#1B1E1F]'>
@@ -159,18 +191,22 @@ export default function Home() {
         </button>
       </div>
     </div>
-          <div>
-            
+
+          <div className='mt-2'>
+            {isTextAreaFocused && (
+              <span className='text-[#787b83] text-[15px]'>작품과 작가 정보를 모두 입력해주세요!</span>
+            )}
             {/* MVP 이후 2차 기능 추가 */}
             {/* <button className='rounded-full p-3 mt-4 bg-gray-800 flex'>
             <Electricbulb /> '모네부터 앤디워홀'을 관람하시나요?
               </button> */}
           </div>
+          
         </div>
       </div>
       <div className='fixed bottom-7 right-3'>
             <Footer />
       </div>
-    </>
+    </div>
   );
 }

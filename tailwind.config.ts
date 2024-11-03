@@ -16,6 +16,9 @@ const config: Config = {
         'custom-1': '0px 2px 6px 0px #8247E24D',
         'custom-2': '0px 1px 0px 0px #FFFFFF80 inset',
       },
+      fontFamily: {
+        wanted: ['WantedSans', 'sans-serif'], // 커스텀 폰트 추가
+      },
     },
   },
   plugins: [],
