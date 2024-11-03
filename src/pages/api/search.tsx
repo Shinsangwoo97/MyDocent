@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   
   const keywordString = keyword.join(', '); // 배열을 문자열로 변환
 
-  // 3. 사용자 존재 확인 및 DB 저장
+  // DB 저장 함수
   const saveQuestions = async () => {
     const sql = `
       INSERT INTO questions (user_id, keyword, question_text, is_answer_failed, created_at)
@@ -26,11 +26,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const [result] = await pool.query<RowDataPacket[]>(sql, [user_id, keywordString, text]);
       console.log("DB 저장 결과:", result);
     } catch (e) {
-      console.error("DB 조회 중 오류:", e);
+      console.error("DB 저장 중 오류:", e);
       throw e;
     }
   };
-  
+
+  // DB 저장 호출
   await saveQuestions();
 
   const options = {
@@ -45,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         { role: "system", content: ai_role },
         { role: "user", content: text }
       ],
-      max_tokens: 100000, // 숫자로 변경
+      max_tokens: 100000,
       temperature: 0.2,
       top_p: 0.9,
       return_citations: true,
@@ -59,22 +60,82 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       frequency_penalty: 1
     })
   };
-  
-  
-  
-  fetch('https://api.perplexity.ai/chat/completions', options)
-    .then(response => response.json())
-    .then(response => {
-        console.log("전체 응답:", response); // 전체 응답을 출력
-        if (response.choices && response.choices.length > 0) {
-          const message = response.choices[0].message; // 첫 번째 선택의 message 가져오기
-          console.log("AI의 응답 메시지:", message); // AI의 응답 메시지 출력
-          console.log("내용", message.content); // AI의 응답 메시지의 content 출력
-        } else {
-          console.error("응답 선택이 없습니다.");
-        }
-      })
-    .catch(err => console.error(err));
 
-  return res.status(200).json({ success: "검색 진행중" });
+  try {
+    const response = await fetch('https://api.perplexity.ai/chat/completions', options);
+    const data = await response.json();
+
+    console.log("전체 응답:", data); // 전체 응답을 출력
+    if (data.choices && data.choices.length > 0) {
+      const message = data.choices[0].message; // 첫 번째 선택의 message 가져오기
+      console.log("AI의 응답 메시지:", message); // AI의 응답 메시지 출력
+      console.log("내용", message.content); // AI의 응답 메시지의 content 출력
+
+      // const classifiedData = classifyContent(message.content); // 내용 분류
+      // console.log("분류된 데이터:", classifiedData); // 분류된 데이터 출력
+      // return res.status(200).json({ success: "검색 완료", classifiedData }); // 응답 반환
+      return res.status(200).json({ success: "검색 완료" }); // 응답 반환
+    } else {
+      console.error("응답 선택이 없습니다.");
+      return res.status(500).json({ error: "응답 선택이 없습니다." });
+    }
+  } catch (error) {
+    console.error("API 요청 중 오류:", error);
+    return res.status(500).json({ error: "API 요청 중 오류 발생" });
+  }
+
+  // 내용 분류 함수
+  // function classifyContent(content: string) {
+  //   const data = {
+  //     generalInfo: [] as { label: string; description: string }[],
+  //     descriptions: [] as { title: string; items: { header: string; details: { label: string; description: string }[] }[] }[],
+  //   };
+  
+  //   const lines = content.split('\n'); // Split content by lines
+  //   let currentSection: { title: string; items: { header: string; details: { label: string; description: string }[] }[] } | null = null;
+  //   let currentHeader: { header: string; details: { label: string; description: string }[] } | null = null;
+  
+  //   for (const line of lines) {
+  //     const trimmedLine = line.trim();
+  
+  //     // General info (not under any section)
+  //     if (trimmedLine.startsWith('**') && trimmedLine.includes(':')) {
+  //       const labelEnd = trimmedLine.indexOf('**', 2);
+  //       const label = trimmedLine.substring(2, labelEnd).trim();
+  //       const description = trimmedLine.substring(labelEnd + 2).trim();
+  //       data.generalInfo.push({ label, description });
+  //     }
+  //     // New section title
+  //     else if (trimmedLine.startsWith('###')) {
+  //       if (currentSection) {
+  //         if (currentHeader) currentSection.items.push(currentHeader);
+  //         data.descriptions.push(currentSection); // Push the previous section into descriptions
+  //       }
+  //       // Start a new section
+  //       currentSection = { title: trimmedLine.substring(4).trim(), items: [] };
+  //       currentHeader = null;
+  //     }
+  //     // New header within a section
+  //     else if (trimmedLine.startsWith('**') && trimmedLine.endsWith('**:')) {
+  //       if (currentHeader) currentSection!.items.push(currentHeader);
+  //       const header = trimmedLine.substring(2, trimmedLine.length - 3).trim();
+  //       currentHeader = { header, details: [] };
+  //     }
+  //     // Details under the current header
+  //     else if (trimmedLine.startsWith('- **') && trimmedLine.includes(':')) {
+  //       const labelEnd = trimmedLine.indexOf('**', 4);
+  //       const label = trimmedLine.substring(4, labelEnd).trim();
+  //       const description = trimmedLine.substring(labelEnd + 2).trim();
+  //       currentHeader!.details.push({ label, description });
+  //     }
+  //   }
+  
+  //   // Push the last section and header if they exist
+  //   if (currentHeader) currentSection!.items.push(currentHeader);
+  //   if (currentSection) data.descriptions.push(currentSection);
+  
+  //   console.log("분류된 데이터:", data);
+  //   return data;
+  // }
+
 }
