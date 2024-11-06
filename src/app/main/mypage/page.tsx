@@ -48,7 +48,7 @@ export default function Mypage() {
   };
 
   const handleInquiry = () => {
-    alert('문의하기 클릭');
+    router.push('/main/mypage/inquiry');
   };
 
   const handleTerms = () => {
@@ -85,14 +85,17 @@ export default function Mypage() {
     setIsBottomSheetOpen(false);
   };
 
-  // 로그아웃 모달 닫기 함수
-  const handleLogoutCancel = () => {
+  // 로그아웃 했을 때
+  const handleLogoutClose = () => {
     setIsLogoutModalOpen(false);
+    router.push('/main/login');
   };
 
-  const handleWithdrawCancel = () => {
-    setIsWithdrawModalOpen(false);
-  };
+    // 탈퇴했을 때
+    const handleWithdrawClose = () => {
+      setIsWithdrawModalOpen(false);
+      router.push('/main/login');
+    };
 
   return (
     <>
@@ -156,11 +159,11 @@ export default function Mypage() {
           <>
             <div
               className="fixed inset-0 bg-black opacity-80"
-              onClick={handleLogoutCancel}
+              onClick={() => setIsLogoutModalOpen(false)}
             />
             <LogoutClose 
-              onClose={() => setIsLogoutModalOpen(false)} //로그아웃 완료 수정
-              onCancel={handleLogoutCancel}
+              onClose={handleLogoutClose} //로그아웃 완료 수정
+              onCancel={() => setIsLogoutModalOpen(false)}
             />
           </>
         )}
@@ -169,11 +172,11 @@ export default function Mypage() {
           <>
             <div
               className="fixed inset-0 bg-black opacity-80"
-              onClick={handleWithdrawCancel}
+              onClick={() => setIsWithdrawModalOpen(false)}
             />
             <WithdrawClose 
-              onClose={() => setIsWithdrawModalOpen(false)} //탈퇴 완료 수정
-              onCancel={handleWithdrawCancel}
+              onClose={handleWithdrawClose} //탈퇴 완료 수정
+              onCancel={() => setIsWithdrawModalOpen(false)}
             />
           </>
         )}

@@ -1,33 +1,35 @@
-const InquiryClose: React.FC<{ onClose: () => void }> = ({ onClose }) => {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-[#0C0D0F] font-['WantedSans']">
-        <div className="w-[335px] h-[168px] top-[322.5px] left-[20px] rounded-[20px] p-[20px] gap-[20px] bg-[#151718]">
-          <div className="w-[295px] h-[56px] gap-[6px] text-center mb-3">
-            <p className="font-semibold text-[18px] leading-[28.8px] tracking--1">
-              문서 작성을 그만하시겠어요?
+const InquiryClose: React.FC<{ onClose: () => void, onCancel: () => void }> = ({ onClose, onCancel }) => {
+  return (
+    <>
+      <div className="fixed bg-black opacity-80 backdrop-blur-sm" onClick={onCancel} />
+      <div className="fixed left-[50%] top-[50%] transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center font-['WantedSans']">
+        <div className="rounded-[20px] bg-[#151718] p-[20px]">
+          <div className="text-center mb-5">
+            <p className="text-[18px]">
+              문의 작성을 그만하시겠어요?
             </p>
-            <p className="font-normal text-[15px] leading-[21px] tracking--1 text-[#787B83]">
+            <p className="text-[15px] text-[#787B83] mt-2">
               작성한 내용이 모두 사라져요
             </p>
           </div>
-          <div className="flex w-[295px] h-[52px] gap-[10px] justify-between">
+          <div className="flex justify-between">
             <button
-              onClick={onClose}
-              className="w-[142.5px] h-[52px] rounded-[30px] p-[14px_20px] gap-[6px] bg-[#1B1E1F] text-[#787B83]"
+              onClick={onCancel}
+              className="w-[142.5px] h-[52px] rounded-[30px] bg-[#1B1E1F] text-[#787B83] mr-2"
             >
               취소
             </button>
             <button
               onClick={onClose}
-              className="w-[142.5px] h-[52px] rounded-[30px] p-[14px_20px] gap-[6px] bg-[#1B1E1F] text-[#FFFFFF]"
+              className="w-[142.5px] h-[52px] rounded-[30px] bg-[#1B1E1F] text-[#FFFFFF]"
             >
               확인
             </button>
           </div>
         </div>
       </div>
-    );
-  };
+    </>
+  );
+};
 
-  export default InquiryClose;
-  
+export default InquiryClose;
