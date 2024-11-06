@@ -69,11 +69,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (data.choices && data.choices.length > 0) {
       const message = data.choices[0].message; // 첫 번째 선택의 message 가져오기
       console.log("AI의 응답 메시지:", message); // AI의 응답 메시지 출력
-      console.log("내용", message.content); // AI의 응답 메시지의 content 출력
+      console.log("내용", message.content); // AI의 응답 메시지의 content 출력)
 
-      // const classifiedData = classifyContent(message.content); // 내용 분류
-      // console.log("분류된 데이터:", classifiedData); // 분류된 데이터 출력
-      // return res.status(200).json({ success: "검색 완료", classifiedData }); // 응답 반환
       return res.status(200).json({ success: "검색 완료" }); // 응답 반환
     } else {
       console.error("응답 선택이 없습니다.");
@@ -83,59 +80,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.error("API 요청 중 오류:", error);
     return res.status(500).json({ error: "API 요청 중 오류 발생" });
   }
-
-  // 내용 분류 함수
-  // function classifyContent(content: string) {
-  //   const data = {
-  //     generalInfo: [] as { label: string; description: string }[],
-  //     descriptions: [] as { title: string; items: { header: string; details: { label: string; description: string }[] }[] }[],
-  //   };
-  
-  //   const lines = content.split('\n'); // Split content by lines
-  //   let currentSection: { title: string; items: { header: string; details: { label: string; description: string }[] }[] } | null = null;
-  //   let currentHeader: { header: string; details: { label: string; description: string }[] } | null = null;
-  
-  //   for (const line of lines) {
-  //     const trimmedLine = line.trim();
-  
-  //     // General info (not under any section)
-  //     if (trimmedLine.startsWith('**') && trimmedLine.includes(':')) {
-  //       const labelEnd = trimmedLine.indexOf('**', 2);
-  //       const label = trimmedLine.substring(2, labelEnd).trim();
-  //       const description = trimmedLine.substring(labelEnd + 2).trim();
-  //       data.generalInfo.push({ label, description });
-  //     }
-  //     // New section title
-  //     else if (trimmedLine.startsWith('###')) {
-  //       if (currentSection) {
-  //         if (currentHeader) currentSection.items.push(currentHeader);
-  //         data.descriptions.push(currentSection); // Push the previous section into descriptions
-  //       }
-  //       // Start a new section
-  //       currentSection = { title: trimmedLine.substring(4).trim(), items: [] };
-  //       currentHeader = null;
-  //     }
-  //     // New header within a section
-  //     else if (trimmedLine.startsWith('**') && trimmedLine.endsWith('**:')) {
-  //       if (currentHeader) currentSection!.items.push(currentHeader);
-  //       const header = trimmedLine.substring(2, trimmedLine.length - 3).trim();
-  //       currentHeader = { header, details: [] };
-  //     }
-  //     // Details under the current header
-  //     else if (trimmedLine.startsWith('- **') && trimmedLine.includes(':')) {
-  //       const labelEnd = trimmedLine.indexOf('**', 4);
-  //       const label = trimmedLine.substring(4, labelEnd).trim();
-  //       const description = trimmedLine.substring(labelEnd + 2).trim();
-  //       currentHeader!.details.push({ label, description });
-  //     }
-  //   }
-  
-  //   // Push the last section and header if they exist
-  //   if (currentHeader) currentSection!.items.push(currentHeader);
-  //   if (currentSection) data.descriptions.push(currentSection);
-  
-  //   console.log("분류된 데이터:", data);
-  //   return data;
-  // }
 
 }
