@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import BottomSheet from '../../components/BottomSheet';
 import LogoutClose from '@/components/modal/LogoutClose';
+import WithdrawClose from '@/components/modal/WithdrawClose';
 
 // ActionButton 컴포넌트의 props 타입 정의
 interface ActionButtonProps {
@@ -35,6 +36,7 @@ export default function Mypage() {
   const [name, setName] = useState(''); // 변경된 이름 저장
   const [showAlert, setShowAlert] = useState(false); // 알림 상태 관리
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false); // 로그아웃 모달 상태 관리
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false); // 탈퇴 모달 상태 관리
 
   const goBack = useCallback(() => {
     router.push('/');
@@ -58,7 +60,7 @@ export default function Mypage() {
   };
 
   const handleDeleteAccount = () => {
-    alert('회원탈퇴 클릭');
+    setIsWithdrawModalOpen(true);
   };
 
   // 버튼 정보 배열, 각 버튼에 onClick 추가
@@ -86,6 +88,10 @@ export default function Mypage() {
   // 로그아웃 모달 닫기 함수
   const handleLogoutCancel = () => {
     setIsLogoutModalOpen(false);
+  };
+
+  const handleWithdrawCancel = () => {
+    setIsWithdrawModalOpen(false);
   };
 
   return (
@@ -155,6 +161,19 @@ export default function Mypage() {
             <LogoutClose 
               onClose={() => setIsLogoutModalOpen(false)} //로그아웃 완료 수정
               onCancel={handleLogoutCancel}
+            />
+          </>
+        )}
+
+        {isWithdrawModalOpen && (
+          <>
+            <div
+              className="fixed inset-0 bg-black opacity-80"
+              onClick={handleWithdrawCancel}
+            />
+            <WithdrawClose 
+              onClose={() => setIsWithdrawModalOpen(false)} //탈퇴 완료 수정
+              onCancel={handleWithdrawCancel}
             />
           </>
         )}

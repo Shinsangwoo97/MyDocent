@@ -30,4 +30,3 @@ const NameChangeClose: React.FC<{ onClose: () => void, onCancel: () => void }> =
   };
 
   export default NameChangeClose;
-  

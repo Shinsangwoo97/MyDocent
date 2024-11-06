@@ -4,7 +4,7 @@ export default function Player() {
  
   return (
     <>
-     <Audioplayer />
+      <Audioplayer />
     </>
   );
 }
