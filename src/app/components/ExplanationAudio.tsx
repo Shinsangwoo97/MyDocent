@@ -50,8 +50,6 @@ const ReviewButtons: React.FC<ReviewButtonsProps> = ({ openReview, review, handl
 ReviewButtons.displayName = 'ReviewButtons';  // displayName 추가
 
 export default function TTSWithScroll() {
-  const [count, setCount] = useState(0)
-
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSegment, setCurrentSegment] = useState<number>(0);
   const [segments, setSegments] = useState<TextSegment[]>([]);
@@ -64,6 +62,11 @@ export default function TTSWithScroll() {
   const [isReviewClick, setIsReviewClick] = useState(false);
   const [openReview, setOpenReview] = useState(false);
   const [review, setReview] = useState<number | null>(null);
+  const [highlighted, setHighlighted] = useState(true); // 하이라이트 상태 관리
+
+  const toggleHighlight = () => {
+    setHighlighted((prev) => !prev); // 버튼 클릭 시 하이라이트 상태 토글
+  };
 
   const handleGoHome = () => {
     router.push('/');
@@ -179,14 +182,14 @@ export default function TTSWithScroll() {
         <div className='h-auto max-h-[600px] overflow-y-auto'>
           <h1>{parsedText.artwork}</h1>
           <div className={`mt-1 font-normal text-[20px] leading-[32px] tracking-[-0.02em]`}>
-            {segments.map((segment, index) => (
+          {segments.map((segment, index) => (
               <p
                 key={index}
                 ref={(el) => {
                   segmentRefs.current[index] = el;
                 }}
                 className={`${
-                  index === currentSegment ? 'my-1 text-[#FFFFFF]' : 'm-0 text-[#FFFFFF4D]'
+                  highlighted ? (index === currentSegment ? 'my-1 text-[#FFFFFF]' : 'm-0 text-[#FFFFFF4D]') : 'my-1 text-[#FFFFFF]' 
                 }`}
               >
                 {segment.text}
@@ -206,7 +209,8 @@ export default function TTSWithScroll() {
 
           <div className='h-[178px] p-[0px_16px_14px_20px] flex items-center'>
             <div className='flex flex-col w-[44px] h-[164px]'>
-              <button className='w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]'>
+              <button className='w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]'
+                onClick={toggleHighlight}>
                 <Image 
                   src="/logo/pen.svg" 
                   alt="Loading Logo" 
