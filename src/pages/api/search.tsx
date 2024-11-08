@@ -71,6 +71,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log("AI의 응답 메시지:", message); // AI의 응답 메시지 출력
       console.log("내용", message.content); // AI의 응답 메시지의 content 출력)
 
+const resultString = message.content.replace(/\*/g, "");
+console.log(resultString);
+
+// 항목별 구분자 기준으로 데이터를 나누기
+const sections: string[] = resultString.split(/(?=\n작가:|\n작품:|\n전시 장소:|\n작품 소개:|\n작가 소개:|\n작품 배경:|\n감상 포인트:|\n미술사:|\n출처:)/);
+
+interface DataObject {
+  [key: string]: string;
+}
+
+const dataObject: DataObject = {};
+
+sections.forEach(section => {
+  const [key, value] = section.split(/:\s(.+)/);
+  if (key && value) {
+    dataObject[key.trim()] = value.trim();
+  }
+});
+
+console.log(dataObject); // 데이터 객체화 결과 확인
+console.log(dataObject['미술사']);
+
+
       return res.status(200).json({ success: "검색 완료" }); // 응답 반환
     } else {
       console.error("응답 선택이 없습니다.");
