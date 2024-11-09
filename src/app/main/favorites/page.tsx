@@ -65,6 +65,7 @@ ArtworkItem.displayName = 'ArtworkItem';
 const Favorites: React.FC = () => {
   const router = useRouter()
   const [selectedEmotion, setSelectedEmotion] = useState<string>('all')
+  const [isEditMode, setIsEditMode] = useState<boolean>(false) // 수정 모드 상태 관리
   
   const goBack = useCallback(() => {
     router.push('/')
@@ -114,9 +115,29 @@ const Favorites: React.FC = () => {
             height={32} 
             />
         </button>
-        <button className='font-semibold text-[16px] leading-[24px] tracking-[-1px]'>
-          수정
-        </button>
+        {isEditMode ? (
+          <div className="flex gap-6">
+            <button 
+              className='text-[16px] text-[#787b83]'
+              onClick={() => setIsEditMode(false)}
+            >
+              취소
+            </button>
+            <button 
+              className='text-[16px]'
+              onClick={() => setIsEditMode(false)}
+            >
+              수정 완료
+            </button>
+          </div>
+        ) : (
+          <button 
+            className='text-[16px]'
+            onClick={() => setIsEditMode(true)}
+          >
+            수정
+          </button>
+        )}
       </div>
       {/* 제목 */}
       <div className='w-full p-[16px_20px] gap-[10px]'>

@@ -1,15 +1,4 @@
 "use client";
-
-import { useState, useRef, useEffect } from 'react';
-import parsedText from '../initalText';
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-
-interface TextSegment {
-  text: string;
-  startTime: number;
-}
-
 interface ButtonData {
   id: number;
   emoji: string;
@@ -47,22 +36,95 @@ const ReviewButtons: React.FC<ReviewButtonsProps> = ({ openReview, review, handl
     </div>
   );
 };
-ReviewButtons.displayName = 'ReviewButtons';  // displayName 추가
+ReviewButtons.displayName = 'ReviewButtons';
 
-export default function TTSWithScroll() {
+
+import { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+
+interface TextSegment {
+  text: string;
+  startTime: number;
+}
+
+interface AudioplayerProps {
+  uuid: string;
+}
+
+// const TTSWithScroll: React.FC<AudioplayerProps> = ({ uuid }) => {
+const TTSWithScroll: React.FC = () => {
+  const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSegment, setCurrentSegment] = useState<number>(0);
   const [segments, setSegments] = useState<TextSegment[]>([]);
-  const [rateIndex, setRateIndex] = useState(0); // 속도 배열의 인덱스
-  const playbackRates = [1, 1.25, 1.5, 1.75, 2]; // 속도 배열
+  const [rateIndex, setRateIndex] = useState(0); //속도 배열의 인덱스
+  const playbackRates = [1, 1.25, 1.5, 1.75, 2]; //속도 배열
   const synthRef = useRef<SpeechSynthesisUtterance | null>(null);
   const segmentRefs = useRef<(HTMLParagraphElement | null)[]>([]);
-  const router = useRouter();
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const [isReviewClick, setIsReviewClick] = useState(false);
   const [openReview, setOpenReview] = useState(false);
   const [review, setReview] = useState<number | null>(null);
   const [highlighted, setHighlighted] = useState(true); // 하이라이트 상태 관리
+  const [parsedText, setParsedText] = useState<any>(null);
+
+  const artworkData = {
+    user_id: 20,                    // 사용자 ID
+    uuid: "619a76b0-c8e5-4961-911e-e3115f960087",                       // 고유 식별자(UUID)
+    keyword: JSON.stringify(["workIntro", "authorIntro", "workBackground"]), // 키워드 배열을 JSON 문자열로 변환
+    author: "클로드 모네 (Claude Monet)",        // 작가 이름
+    workTitle: "수련 (Water Lilies)",             // 작품 제목
+    location: "도쿄 국립 서양 미술관, 부산 아르떼 뮤지엄", // 전시 장소 정보
+    workIntro: "수련은 모네의 대표작 중 하나로, 그의 생애 마지막 30년 동안 주요한 소재였습니다. 약 250점의 유화로 구성된 이 연작은 지베르니의 정원을 배경으로 빛의 변화에 따라 시시각각 달라지는 장면을 표현합니다. 백내장을 앓으면서도 빛을 관찰하며 작업한 모네의 열정이 담겨 있습니다.",
+    authorIntro: "프랑스의 화가이자 인상주의 회화의 창시자로, 모더니즘의 선구자로 여겨지는 클로드 모네는 빛과 자연의 역동성을 작품을 통해 묘사했습니다.",
+    workBackground: "수련 연작은 모네가 지베르니 정원에서 작업한 작품들로, 생애 마지막 30년 동안의 주요한 소재였습니다. 백내장을 앓으며 시력을 잃어가던 모네는 빛이 시시각각 변화하는 모습을 담아내려 했습니다.",
+    appreciationPoint: "빛의 변화에 따른 감상과 자연의 역동성을 표현한 붓터치가 특징입니다. 모네의 자연에 대한 열정과 애정을 느낄 수 있습니다.",
+    history: "인상주의는 19세기 미술 운동으로, 빛과 시간의 흐름에 따른 변화와 개방적 구성을 특징으로 합니다. 모네는 인상주의 창시자이자 모더니즘의 선구자로 평가받습니다.",
+    source: `
+        - 네이버 블로그: "유명한 인상주의 화가 클로드 모네 작품 감상하기!"
+        - 한경: "고흐의 콧날, 모네의 수련…파리 오르세 명작들이 부산에서 춤춘다"
+        - YouTube: "도쿄 국립 서양미술관의 모네 특별전을 방문하다."
+    `
+};
+
+  // 선택한 키워드만 나오는 버전
+  // useEffect(() => {
+  //   // 키워드를 배열로 변환하여 각 항목을 필터링합니다.
+  //   const keywords = JSON.parse(artworkData.keyword) as string[];
+
+  //   // 키워드에 해당하는 텍스트를 모아서 `segments`로 변환합니다.
+  //   const filteredSegments = keywords
+  //       .map((key) => artworkData[key as keyof typeof artworkData]) // 키워드에 해당하는 텍스트 가져오기
+  //       .filter((text) => typeof text === 'string') // 문자열만 필터
+  //       .flatMap((text, index) => // 문장 단위로 나누고 필요한 정보 추가
+  //           (text as string).split(/(?<=\.)\s+/).map((sentence, idx) => ({
+  //               text: sentence.trim(),
+  //               startTime: (index + idx) * 5, // 재생 시작 시간 설정
+  //           }))
+  //       );
+
+  //   setSegments(filteredSegments); // 선택된 문장들을 segments로 설정
+  //   setParsedText(artworkData); // 전체 데이터를 파싱된 텍스트로 설정
+  // }, []);
+
+  useEffect(() => {
+    const keysToInclude = ["workIntro", "authorIntro", "workBackground", "appreciationPoint", "history"];
+
+    // 각 키에 해당하는 텍스트를 가져와 `segments` 배열을 생성합니다.
+    const filteredSegments = keysToInclude
+        .map((key) => artworkData[key as keyof typeof artworkData]) // 각 키에 해당하는 텍스트 가져오기
+        .filter((text) => typeof text === 'string') // 문자열만 필터
+        .flatMap((text, index) => // 문장 단위로 나누고 필요한 정보 추가
+            (text as string).split(/(?<=\.)\s+/).map((sentence, idx) => ({
+                text: sentence.trim(),
+                startTime: (index + idx) * 5, // 재생 시작 시간 설정
+            }))
+        );
+
+    setSegments(filteredSegments); // 선택된 문장들을 segments로 설정
+    setParsedText(artworkData); // 전체 데이터를 파싱된 텍스트로 설정
+  }, []);
 
   const toggleHighlight = () => {
     setHighlighted((prev) => !prev); // 버튼 클릭 시 하이라이트 상태 토글
@@ -83,14 +145,6 @@ export default function TTSWithScroll() {
       playSegmentFromIndex(currentSegment, playbackRates[nextIndex]);
     }
   };
-
-  useEffect(() => {
-    const sentences = parsedText.description.split('\n').map((sentence, index) => ({
-      text: sentence.trim(),
-      startTime: index * 5,
-    }));
-    setSegments(sentences);
-  }, []);
 
   useEffect(() => {
     if (isPlaying && synthRef.current) {
@@ -166,7 +220,6 @@ export default function TTSWithScroll() {
 
   return (
     <div className='font-wanted'>
-      
       <button
         className='w-[375px] h-[56px] p-[16px_20px]'
         onClick={handleGoHome}>
@@ -180,9 +233,9 @@ export default function TTSWithScroll() {
 
       <div className='px-5'>
         <div className='h-auto max-h-[600px] overflow-y-auto'>
-          <h1>{parsedText.artwork}</h1>
+          <h1>{parsedText?.artwork}</h1>
           <div className={`mt-1 font-normal text-[20px] leading-[32px] tracking-[-0.02em]`}>
-          {segments.map((segment, index) => (
+            {segments.map((segment, index) => (
               <p
                 key={index}
                 ref={(el) => {
@@ -195,12 +248,15 @@ export default function TTSWithScroll() {
                 {segment.text}
               </p>
             ))}
+
+            <span className="text-white text-[15px] mb-2">작품에 대해 더 궁금한 점이 있으신가요?</span>
+
           </div>
         </div>
       </div>
 
       <div className='absolute fixed bottom-0 inset-x-0 z-10'>
-        <div className='flex justify-end items-center'> {/* ReviewButtons를 버튼 그룹 옆에 배치 */}
+        <div className='flex justify-end items-center'>
           <ReviewButtons
             openReview={openReview}
             review={review}
@@ -218,7 +274,7 @@ export default function TTSWithScroll() {
                   height={32} 
                 />
               </button>
-              
+
               <div className='my-4 flex justify-center w-[44px] h-[44px] rounded-[40px] p-[10px] gap-1 bg-[#151718] font-semibold text-[12px]'>
                 <button onClick={togglePlaybackRate}>
                   {playbackRates[rateIndex]}
@@ -259,40 +315,41 @@ export default function TTSWithScroll() {
             className="w-full h-[4px] rounded-lg appearance-none"
             style={{
               background: `linear-gradient(to right, white 0%, white ${(currentSegment / (segments.length - 1)) * 100}%, #484C52 ${(currentSegment / (segments.length - 1)) * 100}%, #484C52 100%)`,
-            }}/>
-              <style jsx>{`
-                input[type="range"]::-webkit-slider-thumb {
-                  -webkit-appearance: none;
-                  appearance: none;
-                  width: 0;
-                  height: 0;
-                  background-color: transparent;
-                }
+            }}
+          />
+          <style jsx>{`
+            input[type="range"]::-webkit-slider-thumb {
+              -webkit-appearance: none;
+              appearance: none;
+              width: 0;
+              height: 0;
+              background-color: transparent;
+            }
 
-                input[type="range"]::-moz-range-thumb {
-                  appearance: none;
-                  width: 0;
-                  height: 0;
-                  background-color: transparent;
-                }
-              `}</style>
+            input[type="range"]::-moz-range-thumb {
+              appearance: none;
+              width: 0;
+              height: 0;
+              background-color: transparent;
+            }
+          `}</style>
 
           <div className='flex justify-center items-center h-full my-2'>
-            <div className='flex w-[335px] h-[55px] gap-[14px]'>
-              <Image 
+            <div className='flex w-[335px] h-[55px] gap-[14px] justify-between'>
+              {/* <Image 
                 src="" 
                 width={54}
                 height={54}
                 alt="작품 이미지"
                 className='w-[54px] h-[54px] rounded-[10px] blur-sm'
-              />
+              /> */}
               
               <div>
                 <div className='w-[201px] h-[29px] font-semibold text-[18px] leading-[28.9px] tracking-[-1%] text-[#FFFFFF]'>
-                  {parsedText.artwork}
+                  {parsedText?.workTitle}
                 </div>
                 <div className='w-[201px] h-[24px] font-normal text-[16px] leading-[24px]tracking-[-1%] text-[#787B83]'>
-                  파블로 피카소
+                  {parsedText?.author}
                 </div>
               </div>
               
@@ -327,6 +384,6 @@ export default function TTSWithScroll() {
       </div>
     </div>
   );
-}
+};
 
-TTSWithScroll.displayName = 'TTSWithScroll';  // displayName 추가
+export default TTSWithScroll;

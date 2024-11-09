@@ -4,6 +4,7 @@ import Footer from './components/Footer';
 import Image from 'next/image';
 import { UserType } from "@/types/user";
 import { useRouter } from 'next/navigation';
+import { v4 as uuidv4 } from 'uuid';
 
 interface ButtonData {
   label: string;
@@ -35,6 +36,7 @@ export default function Home() {
   const [nickname, setNickName] = useState<string>(''); // 기본값 설정
   const [warningMessage, setWarningMessage] = useState<string>(''); // 키워드 한 개 이상 선택 경고 메시지 상태
   const [isTextAreaFocused, setIsTextAreaFocused] = useState<boolean>(false); //사용자가 입력할 때 밑에 문구 생기게 하기 위함
+  const [responseData, setResponseData] = useState(null);
   const router = useRouter();
 
   //2초 후에 경고 메시지를 초기화하기 위함
@@ -53,16 +55,59 @@ export default function Home() {
     setIsSendClicked(e.target.value.length > 0); // 텍스트가 있을 때만 버튼을 Onsend로 바꿈
   };
 
-  const handleSendClick = () => {
+  const handleSendClick = async () => {
     // 경고 메시지 설정
     if (buttonData.every(button => !button.isClicked)) {
       setWarningMessage('키워드를 한 개 이상 선택해주세요!');
       return;
     }
 
-    // const clickedButtonLabels = buttonData.filter(button => button.isClicked).map(button => button.label);
-    console.log('텍스트 저장:', text); // 입력된 텍스트를 저장하거나 처리
-    // 여기서 서버에 저장하는 로직을 추가할 수 있음
+    router.push('/main/loading');
+    
+    // 선택된 키워드 배열로 추출
+    const selectedKeywords = buttonData
+    .filter(button => button.isClicked)
+    .map(button => button.label);
+
+    const uuid = uuidv4();
+    //요청 데이터 생성
+    const requestData = {
+    user_id: 20,
+    keyword: selectedKeywords,
+    text: text,
+    //uuid: uuidv4() // 각 검색 요청마다 고유한 UUID 생성
+    };
+
+    console.log(requestData);
+
+    try {
+    const response = await fetch('/api/search', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestData)
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log("검색 성공:", data);
+      setResponseData(data); // 응답 데이터를 상태에 저장
+
+      //router.push(`/main/player?data=${encodeURIComponent(JSON.stringify(data))}`);
+      router.push(`/main/player?data=${uuid}`);
+
+      // 로딩 페이지로 이동
+      //localStorage.setItem('uuid', requestData.uuid);
+      //router.push('/main/loading');
+
+    } else {
+      const errorData = await response.json();
+      console.error("에러 메시지:", errorData);
+    }
+    } catch (error) {
+    console.error("네트워크 에러:", error);
+    }
   };
 
   const [buttonData, setButtonData] = useState<ButtonData[]>([
@@ -72,8 +117,6 @@ export default function Home() {
     { label: '관람 포인트', isClicked: false },
     { label: '미술사', isClicked: false },
   ]);
-  
-  console.log('buttonData:', buttonData[2].isClicked);
 
   const handleClick = (index: number) => {
     setButtonData(prevButtonData => {
@@ -116,6 +159,7 @@ export default function Home() {
         // API 응답에서 이름을 가져와서 설정
         if (result.nickname) {
           setNickName(result.nickname);
+          console.log("업데이트된 닉네임:", result.nickname); //작동 안됨
         }
       } catch (error) {
         router.push('/main/login');
