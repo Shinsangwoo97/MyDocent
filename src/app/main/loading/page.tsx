@@ -2,10 +2,31 @@
 
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 export default function Loading() {
   const router = useRouter();
- 
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    const uuid = localStorage.getItem('uuid'); // 로컬 스토리지에서 UUID 가져오기
+
+    if (uuid) {
+      fetch(`/api/description?uuid=${uuid}`) // UUID를 쿼리 파라미터로 보내기
+        .then((response) => response.json())
+        .then((data) => {
+          setData(data);
+          console.log(data);
+          router.push(`/main/player?id=${uuid}`); // 데이터를 받아오고 Player 페이지로 이동
+        })
+        .catch((error) => {
+          console.error("데이터 로드 오류:", error);
+          router.push('/main/error');
+        });
+    }
+  }, []);
+  
+
   return (
     <>
       <div 

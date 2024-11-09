@@ -61,21 +61,17 @@ export default function Home() {
       setWarningMessage('키워드를 한 개 이상 선택해주세요!');
       return;
     }
-
-    router.push('/main/loading');
     
     // 선택된 키워드 배열로 추출
     const selectedKeywords = buttonData
     .filter(button => button.isClicked)
     .map(button => button.label);
 
-    const uuid = uuidv4();
-    //요청 데이터 생성
     const requestData = {
     user_id: 20,
     keyword: selectedKeywords,
     text: text,
-    //uuid: uuidv4() // 각 검색 요청마다 고유한 UUID 생성
+    uuid: uuidv4()
     };
 
     console.log(requestData);
@@ -94,19 +90,18 @@ export default function Home() {
       console.log("검색 성공:", data);
       setResponseData(data); // 응답 데이터를 상태에 저장
 
-      //router.push(`/main/player?data=${encodeURIComponent(JSON.stringify(data))}`);
-      router.push(`/main/player?data=${uuid}`);
-
       // 로딩 페이지로 이동
-      //localStorage.setItem('uuid', requestData.uuid);
-      //router.push('/main/loading');
+      localStorage.setItem('uuid', requestData.uuid);
+      router.push('/main/loading');
 
     } else {
       const errorData = await response.json();
       console.error("에러 메시지:", errorData);
+      router.push('/main/error');
     }
     } catch (error) {
     console.error("네트워크 에러:", error);
+    router.push('/main/error');
     }
   };
 
