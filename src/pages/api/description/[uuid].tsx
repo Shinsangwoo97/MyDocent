@@ -3,7 +3,7 @@ import pool from '@/lib/db';
 import { RowDataPacket } from 'mysql2';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { uuid } = req.body;
+  const { uuid } = req.query;
  
   const getDescription = async () => {
     const sql = `
