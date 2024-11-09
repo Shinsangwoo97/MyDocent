@@ -49,11 +49,25 @@ interface TextSegment {
 }
 
 interface AudioplayerProps {
-  uuid: string;
+  artworkData: {
+    user_id: number;
+    uuid: string;
+    author: string;
+    workTitle: string;
+    location: string;
+    workIntro: string;
+    authorIntro: string;
+    workBackground: string;
+    appreciationPoint: string;
+    history: string; 
+    source: string; 
+    created_at: string; 
+    keyword: string[];   // JSON 배열을 파싱해서 사용할 때
+    playlist_id: number;
+  };
 }
 
-// const TTSWithScroll: React.FC<AudioplayerProps> = ({ uuid }) => {
-const TTSWithScroll: React.FC = () => {
+const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSegment, setCurrentSegment] = useState<number>(0);
@@ -69,63 +83,48 @@ const TTSWithScroll: React.FC = () => {
   const [highlighted, setHighlighted] = useState(true); // 하이라이트 상태 관리
   const [parsedText, setParsedText] = useState<any>(null);
 
-  const artworkData = {
-    user_id: 20,                    // 사용자 ID
-    uuid: "619a76b0-c8e5-4961-911e-e3115f960087",                       // 고유 식별자(UUID)
-    keyword: JSON.stringify(["workIntro", "authorIntro", "workBackground"]), // 키워드 배열을 JSON 문자열로 변환
-    author: "클로드 모네 (Claude Monet)",        // 작가 이름
-    workTitle: "수련 (Water Lilies)",             // 작품 제목
-    location: "도쿄 국립 서양 미술관, 부산 아르떼 뮤지엄", // 전시 장소 정보
-    workIntro: "수련은 모네의 대표작 중 하나로, 그의 생애 마지막 30년 동안 주요한 소재였습니다. 약 250점의 유화로 구성된 이 연작은 지베르니의 정원을 배경으로 빛의 변화에 따라 시시각각 달라지는 장면을 표현합니다. 백내장을 앓으면서도 빛을 관찰하며 작업한 모네의 열정이 담겨 있습니다.",
-    authorIntro: "프랑스의 화가이자 인상주의 회화의 창시자로, 모더니즘의 선구자로 여겨지는 클로드 모네는 빛과 자연의 역동성을 작품을 통해 묘사했습니다.",
-    workBackground: "수련 연작은 모네가 지베르니 정원에서 작업한 작품들로, 생애 마지막 30년 동안의 주요한 소재였습니다. 백내장을 앓으며 시력을 잃어가던 모네는 빛이 시시각각 변화하는 모습을 담아내려 했습니다.",
-    appreciationPoint: "빛의 변화에 따른 감상과 자연의 역동성을 표현한 붓터치가 특징입니다. 모네의 자연에 대한 열정과 애정을 느낄 수 있습니다.",
-    history: "인상주의는 19세기 미술 운동으로, 빛과 시간의 흐름에 따른 변화와 개방적 구성을 특징으로 합니다. 모네는 인상주의 창시자이자 모더니즘의 선구자로 평가받습니다.",
-    source: `
-        - 네이버 블로그: "유명한 인상주의 화가 클로드 모네 작품 감상하기!"
-        - 한경: "고흐의 콧날, 모네의 수련…파리 오르세 명작들이 부산에서 춤춘다"
-        - YouTube: "도쿄 국립 서양미술관의 모네 특별전을 방문하다."
-    `
-};
-
-  // 선택한 키워드만 나오는 버전
-  // useEffect(() => {
-  //   // 키워드를 배열로 변환하여 각 항목을 필터링합니다.
-  //   const keywords = JSON.parse(artworkData.keyword) as string[];
-
-  //   // 키워드에 해당하는 텍스트를 모아서 `segments`로 변환합니다.
-  //   const filteredSegments = keywords
-  //       .map((key) => artworkData[key as keyof typeof artworkData]) // 키워드에 해당하는 텍스트 가져오기
-  //       .filter((text) => typeof text === 'string') // 문자열만 필터
-  //       .flatMap((text, index) => // 문장 단위로 나누고 필요한 정보 추가
-  //           (text as string).split(/(?<=\.)\s+/).map((sentence, idx) => ({
-  //               text: sentence.trim(),
-  //               startTime: (index + idx) * 5, // 재생 시작 시간 설정
-  //           }))
-  //       );
-
-  //   setSegments(filteredSegments); // 선택된 문장들을 segments로 설정
-  //   setParsedText(artworkData); // 전체 데이터를 파싱된 텍스트로 설정
-  // }, []);
-
   useEffect(() => {
+    console.log('artworkData:', artworkData);
+
     const keysToInclude = ["workIntro", "authorIntro", "workBackground", "appreciationPoint", "history"];
-
-    // 각 키에 해당하는 텍스트를 가져와 `segments` 배열을 생성합니다.
-    const filteredSegments = keysToInclude
-        .map((key) => artworkData[key as keyof typeof artworkData]) // 각 키에 해당하는 텍스트 가져오기
-        .filter((text) => typeof text === 'string') // 문자열만 필터
-        .flatMap((text, index) => // 문장 단위로 나누고 필요한 정보 추가
-            (text as string).split(/(?<=\.)\s+/).map((sentence, idx) => ({
-                text: sentence.trim(),
-                startTime: (index + idx) * 5, // 재생 시작 시간 설정
-            }))
-        );
-
-    setSegments(filteredSegments); // 선택된 문장들을 segments로 설정
-    setParsedText(artworkData); // 전체 데이터를 파싱된 텍스트로 설정
-  }, []);
-
+  
+    // 각 key에 대해 값이 있는지 확인하고 출력
+    keysToInclude.forEach((key) => {
+      if (key in artworkData) {
+        console.log(`${key}:`, artworkData[key as keyof typeof artworkData]);
+      } else {
+        console.log(`${key} does not exist in artworkData.`);
+      }
+    });
+  }, [artworkData]);
+  
+  // useEffect(() => {
+  //   const keysToInclude = ["workIntro", "authorIntro", "workBackground", "appreciationPoint", "history"];
+  
+  //   // 각 텍스트 필드를 가져오고, 문단 단위로 나누기
+  //   const filteredSegments = keysToInclude
+  //     .map((key) => artworkData[key as keyof typeof artworkData]) // 각 텍스트 필드 가져오기
+  //     .filter((text) => typeof text === 'string' && text.trim() !== '') // 텍스트가 비어있지 않은지 확인하고 문자열인지만 체크
+  //     .flatMap((text, index) => {
+  //       if (typeof text === 'string') {
+  //         // text가 문자열일 때만 split 사용
+  //         return text
+  //           .split(/\n+/) // 줄 바꿈을 기준으로 나누기 (한 문단씩 처리)
+  //           .map((sentence, idx): { text: string; startTime: number } => ({
+  //             text: sentence.trim(),
+  //             startTime: (index + idx) * 5, // 재생 시작 시간 설정
+  //           }));
+  //       }
+  //       return [];
+  //     });
+  
+  //   console.log(filteredSegments);
+  
+  //   // segments에 filteredSegments 설정
+  //   setSegments(filteredSegments);
+  //   setParsedText(artworkData);
+  // }, []);
+  
   const toggleHighlight = () => {
     setHighlighted((prev) => !prev); // 버튼 클릭 시 하이라이트 상태 토글
   };
