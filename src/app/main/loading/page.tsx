@@ -9,7 +9,6 @@ export default function Loading() {
 
   useEffect(() => {
     const uuid = localStorage.getItem('uuid'); // 로컬 스토리지에서 UUID 가져오기
-    console.log(uuid);
 
     if (uuid) {
       fetch(`/api/description/${uuid}`)
@@ -23,7 +22,7 @@ export default function Loading() {
           router.push('/main/error');
         });
     }
-  }, []);
+  }, [router]);
 
   return (
     <>
