@@ -70,25 +70,12 @@ export default function Home() {
       text: text,
       uuid: uuidv4()
     };
-<<<<<<< HEAD
   
     console.log("버튼 클릭");
   
     // 로컬 스토리지에 requestData를 저장하고 로딩 페이지로 이동
     localStorage.setItem('requestData', JSON.stringify(requestData));
     localStorage.setItem('uuid', requestData.uuid);
-=======
-
-    try {
-    const response = await fetch('/api/search', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestData)
-    });
-    
->>>>>>> e8174b785d9a5cc933105dc0990d2dae1cc493c6
     router.push('/main/loading');
   };
 
