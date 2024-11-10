@@ -338,10 +338,10 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
               /> */}
               
               <div>
-                <div className='max-w-[201px] max-h-[29px] font-semibold text-[18px] leading-[28.9px] tracking-[-1%] text-[#FFFFFF]'>
+                <div className='max-h-[29px] font-semibold text-[18px] leading-[28.9px] tracking-[-1%] text-[#FFFFFF]'>
                   {workTitle}
                 </div>
-                <div className='max-w-[201px] max-h-[24px] font-normal text-[16px] leading-[24px]tracking-[-1%] text-[#787B83]'>
+                <div className='max-h-[24px] font-normal text-[16px] leading-[24px]tracking-[-1%] text-[#787B83]'>
                   {author}
                 </div>
               </div>
