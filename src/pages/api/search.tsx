@@ -94,6 +94,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const history = dataObject['미술사'];
       const source = dataObject['출처'];
 
+      const cleanedWorkTitle = workTitle.replace(/\s*\(.*$/, "");
+      const cleanedAuthor = author.replace(/\s*\(.*$/, "");
+
+      const cleanedLocation = location.replace(/\s*\[.*$/, "");
+      const cleanedWorkIntro = workIntro.replace(/\s*\[.*$/, "");
+      const cleanedAuthorIntro = authorIntro.replace(/\s*\[.*$/, "");
+      const cleanedWorkBackground = workBackground.replace(/\s*\[.*$/, "");
+      const cleanedAppreciationPoint = appreciationPoint.replace(/\s*\[.*$/, "");
+      const cleanedHistory = history.replace(/\s*\[.*$/, "");
+
       const sql = `
         INSERT INTO playlist
           (playlist_id, user_id, uuid, keyword, author, workTitle, location, workIntro, authorIntro, workBackground, appreciationPoint, history, source, created_at)
@@ -105,14 +115,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           user_id, 
           uuid,
           JSON.stringify(keyword),  // keyword 배열을 JSON 문자열로 변환
-          author, 
-          workTitle, 
-          location, 
-          workIntro, 
-          authorIntro, 
-          workBackground, 
-          appreciationPoint, 
-          history, 
+          cleanedAuthor, 
+          cleanedWorkTitle, 
+          cleanedLocation, 
+          cleanedWorkIntro, 
+          cleanedAuthorIntro, 
+          cleanedWorkBackground, 
+          cleanedAppreciationPoint, 
+          cleanedHistory, 
           source
         ]);
       } catch (e) {
