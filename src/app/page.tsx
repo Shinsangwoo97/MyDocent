@@ -160,6 +160,7 @@ export default function Home() {
     fetchUserData();
   }, [router]); // 빈 배열을 넣어 컴포넌트가 마운트될 때 한 번만 실행
 
+  if(!buttonData) return <p>데이터를 조회중입니다..</p>
   return (
     <div className='font-wanted'>
       {warningMessage && ( // 경고 메시지 조건부 렌더링
