@@ -74,8 +74,6 @@ export default function Home() {
     uuid: uuidv4()
     };
 
-    console.log(requestData);
-
     try {
     const response = await fetch('/api/search', {
       method: 'POST',

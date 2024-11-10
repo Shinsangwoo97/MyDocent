@@ -24,9 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     `;
     try {
       const [result] = await pool.query<RowDataPacket[]>(sql, [user_id, keywordString, text]);
-      console.log("DB 저장 결과:", result);
     } catch (e) {
-      console.error("DB 저장 중 오류:", e);
       throw e;
     }
   };
@@ -65,21 +63,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const response = await fetch('https://api.perplexity.ai/chat/completions', options);
     const data = await response.json();
 
-    console.log("전체 응답:", data); // 전체 응답을 출력
     if (data.choices && data.choices.length > 0) {
       const message = data.choices[0].message; // 첫 번째 선택의 message 가져오기
-      console.log("AI의 응답 메시지:", message); // AI의 응답 메시지 출력
-      console.log("내용", message.content); // AI의 응답 메시지의 content 출력
 
       const classifiedData = classifyContent(message.content); // 내용 분류
-      console.log("분류된 데이터:", classifiedData); // 분류된 데이터 출력
       return res.status(200).json({ success: "검색 완료", classifiedData }); // 응답 반환
     } else {
-      console.error("응답 선택이 없습니다.");
       return res.status(500).json({ error: "응답 선택이 없습니다." });
     }
   } catch (error) {
-    console.error("API 요청 중 오류:", error);
     return res.status(500).json({ error: "API 요청 중 오류 발생" });
   }
 
@@ -120,7 +112,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Push the last section if it exists
     if (currentSection) data.sections.push(currentSection);
   
-    console.log("분류된 데이터:", data);
     return data;
   }
   

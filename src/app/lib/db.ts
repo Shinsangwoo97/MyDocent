@@ -10,11 +10,10 @@ const pool: Pool = createPool({
 
 pool.getConnection()
     .then((connection) => {
-        console.log("Database connected successfully");
         connection.release();
     })
     .catch((err) => {
-        console.error("Database connection error:", err);
+        err.message;
     });
 
 export default pool;

@@ -24,9 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     `;
     try {
       const [result] = await pool.query<RowDataPacket[]>(sql, [user_id, keywordString, text]);
-      console.log("DB 저장 결과:", result);
     } catch (e) {
-      console.error("DB 저장 중 오류:", e);
       throw e;
     }
   };
@@ -117,9 +115,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           history, 
           source
         ]);
-        console.log("DB 저장 결과:", result);
       } catch (e) {
-        console.error("DB 저장 중 오류:", e);
         throw e;
       }
 

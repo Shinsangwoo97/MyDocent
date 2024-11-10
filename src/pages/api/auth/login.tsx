@@ -82,9 +82,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         `;
         try {
           const [result] = await pool.query(sql, [oauth_id, nickname, email, login_type]);
-          console.log("DB 저장 결과:", result);
         } catch (e) {
-          console.error("DB 저장 중 오류:", e);
           throw e;
         }
       };
