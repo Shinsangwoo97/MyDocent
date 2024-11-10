@@ -76,6 +76,8 @@ export default function Home() {
 
     console.log(requestData);
 
+    router.push('/main/loading');
+
     try {
     const response = await fetch('/api/search', {
       method: 'POST',
@@ -92,7 +94,6 @@ export default function Home() {
 
       // 로딩 페이지로 이동
       localStorage.setItem('uuid', requestData.uuid);
-      router.push('/main/loading');
 
     } else {
       const errorData = await response.json();
