@@ -39,7 +39,6 @@ export default function Home() {
   const [isTextAreaFocused, setIsTextAreaFocused] = useState<boolean>(false); //사용자가 입력할 때 밑에 문구 생기게 하기 위함
   const router = useRouter();
 
-  //2초 후에 경고 메시지를 초기화하기 위함
   useEffect(() => {
     if (warningMessage) {
       const timer = setTimeout(() => {
@@ -56,53 +55,28 @@ export default function Home() {
   };
 
   const handleSendClick = async () => {
-    // 경고 메시지 설정
     if (buttonData.every(button => !button.isClicked)) {
       setWarningMessage('키워드를 한 개 이상 선택해주세요!');
       return;
     }
-    
-    // 선택된 키워드 배열로 추출
+  
     const selectedKeywords = buttonData
-    .filter(button => button.isClicked)
-    .map(button => button.label);
-
+      .filter(button => button.isClicked)
+      .map(button => button.label);
+  
     const requestData = {
-    user_id: 20,
-    keyword: selectedKeywords,
-    text: text,
-    uuid: uuidv4()
+      user_id: 20,
+      keyword: selectedKeywords,
+      text: text,
+      uuid: uuidv4()
     };
-
-    console.log(requestData);
-
+  
+    console.log("버튼 클릭");
+  
+    // 로컬 스토리지에 requestData를 저장하고 로딩 페이지로 이동
+    localStorage.setItem('requestData', JSON.stringify(requestData));
+    localStorage.setItem('uuid', requestData.uuid);
     router.push('/main/loading');
-
-    try {
-    const response = await fetch('/api/search', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestData)
-    });
-    
-    router.push('/main/loading');
-
-    if (response.ok) {
-      // 로딩 페이지로 이동
-      localStorage.setItem('uuid', requestData.uuid);
-      router.push('/main/loading');
-
-    } else {
-      const errorData = await response.json();
-      console.error("에러 메시지:", errorData);
-      router.push('/main/error');
-    }
-    } catch (error) {
-    console.error("네트워크 에러:", error);
-    router.push('/main/error');
-    }
   };
 
   const [buttonData, setButtonData] = useState<ButtonData[]>([

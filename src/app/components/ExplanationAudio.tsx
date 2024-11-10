@@ -119,33 +119,6 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     setSegments(segments);
   }, [artworkData]);
   
-  // useEffect(() => {
-  //   const keysToInclude = ["workIntro", "authorIntro", "workBackground", "appreciationPoint", "history"];
-  
-  //   // 각 텍스트 필드를 가져오고, 문단 단위로 나누기
-  //   const filteredSegments = keysToInclude
-  //     .map((key) => artworkData[key as keyof typeof artworkData]) // 각 텍스트 필드 가져오기
-  //     .filter((text) => typeof text === 'string' && text.trim() !== '') // 텍스트가 비어있지 않은지 확인하고 문자열인지만 체크
-  //     .flatMap((text, index) => {
-  //       if (typeof text === 'string') {
-  //         // text가 문자열일 때만 split 사용
-  //         return text
-  //           .split(/\n+/) // 줄 바꿈을 기준으로 나누기 (한 문단씩 처리)
-  //           .map((sentence, idx): { text: string; startTime: number } => ({
-  //             text: sentence.trim(),
-  //             startTime: (index + idx) * 5, // 재생 시작 시간 설정
-  //           }));
-  //       }
-  //       return [];
-  //     });
-  
-  //   console.log(filteredSegments);
-  
-  //   // segments에 filteredSegments 설정
-  //   setSegments(filteredSegments);
-  //   setParsedText(artworkData);
-  // }, []);
-  
   const toggleHighlight = () => {
     setHighlighted((prev) => !prev); // 버튼 클릭 시 하이라이트 상태 토글
   };
@@ -355,7 +328,7 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
           `}</style>
 
           <div className='flex justify-center items-center h-full my-2'>
-            <div className='flex w-[335px] h-[55px] gap-[14px] justify-between'>
+            <div className='flex w-[335px] h-[55px] justify-between'>
               {/* <Image 
                 src="" 
                 width={54}
@@ -365,10 +338,10 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
               /> */}
               
               <div>
-                <div className='w-[201px] h-[29px] font-semibold text-[18px] leading-[28.9px] tracking-[-1%] text-[#FFFFFF]'>
+                <div className='h-[29px] font-semibold text-[18px] leading-[28.9px] tracking-[-1%] text-[#FFFFFF]'>
                   {workTitle}
                 </div>
-                <div className='w-[201px] h-[24px] font-normal text-[16px] leading-[24px]tracking-[-1%] text-[#787B83]'>
+                <div className='h-[24px] font-normal text-[16px] leading-[24px] tracking-[-1%] text-[#787B83]'>
                   {author}
                 </div>
               </div>

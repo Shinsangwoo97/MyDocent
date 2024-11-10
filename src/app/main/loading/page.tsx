@@ -8,21 +8,52 @@ export default function Loading() {
   const router = useRouter();
 
   useEffect(() => {
-    const uuid = localStorage.getItem('uuid'); // 로컬 스토리지에서 UUID 가져오기
-
-    if (uuid) {
-      fetch(`/api/description/${uuid}`)
-        .then((response) => response.json())
-        .then((data) => {
-          sessionStorage.setItem('artworkData', JSON.stringify(data));
-          router.push(`/main/player?id=${uuid}`);
-        })
-        .catch((error) => {
-          console.error('데이터 로드 오류:', error);
+    const requestData = JSON.parse(localStorage.getItem('requestData') || '{}');
+    const uuid = localStorage.getItem('uuid');
+  
+    if (Object.keys(requestData).length > 0) {
+      const sendApiRequest = async () => {
+        try {
+          const response = await fetch('/api/search', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+          });
+  
+          if (response.ok) {
+            const data = await response.json();
+            if (data && uuid) {
+              // GET 요청으로 추가 데이터 받기
+              const descriptionResponse = await fetch(`/api/description/${uuid}`);
+              const descriptionData = await descriptionResponse.json();
+  
+              // 세션 스토리지에 데이터 저장
+              sessionStorage.setItem('artworkData', JSON.stringify(descriptionData));
+  
+              router.push(`/main/player?id=${uuid}`);
+            } else {
+              console.error("응답에서 uuid를 찾을 수 없습니다.");
+              router.push('/main/error'); 
+            }
+          } else {
+            const errorData = await response.json();
+            console.error("API 요청 실패:", errorData);
+            router.push('/main/error');
+          }
+        } catch (error) {
+          console.error("네트워크 에러:", error);
           router.push('/main/error');
-        });
+        }
+      };
+  
+      sendApiRequest();
+    } else {
+      router.push('/main/error'); 
     }
   }, [router]);
+  
 
   return (
     <>
