@@ -210,7 +210,7 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
       playSegmentFromIndex(value, currentRate);
     }
   };
-
+  if(!segments) return <p>데이터를 조회중입니다..</p>
   return (
     <div className='font-wanted'>
       <button
