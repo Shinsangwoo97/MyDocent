@@ -94,6 +94,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const history = dataObject['미술사'];
       const source = dataObject['출처'];
 
+      if(workTitle === null || workTitle.length > 20) {
+        return res.status(500).json({ error: "검색을 다시 해주세요!" });
+      }
+
       const cleanedWorkTitle = workTitle.replace(/\s*\(.*$/, "");
       const cleanedAuthor = author.replace(/\s*\(.*$/, "");
 
