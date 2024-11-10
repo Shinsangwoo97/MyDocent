@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       VALUES (?, ?, ?, 0, NOW())
     `;
     try {
-      const [result] = await pool.query<RowDataPacket[]>(sql, [user_id, keywordString, text]);
+      await pool.query<RowDataPacket[]>(sql, [user_id, keywordString, text]);
     } catch (e) {
       throw e;
     }
@@ -101,7 +101,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       `;
 
       try {
-        const [result] = await pool.query<RowDataPacket[]>(sql, [
+        await pool.query<RowDataPacket[]>(sql, [
           user_id, 
           uuid,
           JSON.stringify(keyword),  // keyword 배열을 JSON 문자열로 변환
@@ -118,13 +118,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       } catch (e) {
         throw e;
       }
-
             return res.status(200).json({ success: "검색 완료" }); // 응답 반환
           } else {
             return res.status(500).json({ error: "응답 선택이 없습니다." });
           }
   } catch (error) {
-    console.error("API 요청 중 오류:", error);
     return res.status(500).json({ error: "API 요청 중 오류 발생" });
   }
 

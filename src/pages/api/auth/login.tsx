@@ -82,6 +82,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         `;
         try {
           const [result] = await pool.query(sql, [oauth_id, nickname, email, login_type]);
+          return result;
         } catch (e) {
           throw e;
         }
