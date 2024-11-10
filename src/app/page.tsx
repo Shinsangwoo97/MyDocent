@@ -1,4 +1,5 @@
 'use client'
+
 import { useEffect, useState } from 'react';
 import Footer from './components/Footer';
 import Image from 'next/image';
@@ -36,7 +37,6 @@ export default function Home() {
   const [nickname, setNickName] = useState<string>(''); // 기본값 설정
   const [warningMessage, setWarningMessage] = useState<string>(''); // 키워드 한 개 이상 선택 경고 메시지 상태
   const [isTextAreaFocused, setIsTextAreaFocused] = useState<boolean>(false); //사용자가 입력할 때 밑에 문구 생기게 하기 위함
-  const [responseData, setResponseData] = useState(null);
   const router = useRouter();
 
   //2초 후에 경고 메시지를 초기화하기 위함
@@ -86,14 +86,13 @@ export default function Home() {
       },
       body: JSON.stringify(requestData)
     });
+    
+    router.push('/main/loading');
 
     if (response.ok) {
-      const data = await response.json();
-      console.log("검색 성공:", data);
-      setResponseData(data); // 응답 데이터를 상태에 저장
-
       // 로딩 페이지로 이동
       localStorage.setItem('uuid', requestData.uuid);
+      router.push('/main/loading');
 
     } else {
       const errorData = await response.json();
