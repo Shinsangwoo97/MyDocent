@@ -81,21 +81,42 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
   const [openReview, setOpenReview] = useState(false);
   const [review, setReview] = useState<number | null>(null);
   const [highlighted, setHighlighted] = useState(true); // 하이라이트 상태 관리
-  const [parsedText, setParsedText] = useState<any>(null);
+  const [author, setAuthor] = useState<string | null>(null);
+  const [workTitle, setWorkTitle] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log('artworkData:', artworkData);
+    setAuthor(artworkData.author);
+    setWorkTitle(artworkData.workTitle);
+    const workIntro = artworkData.workIntro;
+    const authorIntro = artworkData.authorIntro;
+    const workBackground = artworkData.workBackground;
+    const appreciationPoint = artworkData.appreciationPoint;
+    const history = artworkData.history;
 
-    const keysToInclude = ["workIntro", "authorIntro", "workBackground", "appreciationPoint", "history"];
-  
-    // 각 key에 대해 값이 있는지 확인하고 출력
-    keysToInclude.forEach((key) => {
-      if (key in artworkData) {
-        console.log(`${key}:`, artworkData[key as keyof typeof artworkData]);
-      } else {
-        console.log(`${key} does not exist in artworkData.`);
-      }
-    });
+    const text = `
+    작품소개
+    ${workIntro}
+    작가소개
+    ${authorIntro}
+    작품배경
+    ${workBackground}
+    감상포인트
+    ${appreciationPoint}
+    미술사
+    ${history}
+    `
+
+    // 문단 단위로 나누고 배열로 변환
+    const segments = text
+      .split(/\n+/) // 줄 바꿈을 기준으로 나누기 (한 문단씩 처리)
+      .map((sentence, idx): { text: string; startTime: number } => ({
+        text: sentence.trim(),
+        startTime: idx * 5, // 재생 시작 시간 설정 (예시로 5초 간격 설정)
+      }))
+      .filter((segment) => segment.text); // 빈 문장은 필터링
+
+    // `setSegments`에 설정
+    setSegments(segments);
   }, [artworkData]);
   
   // useEffect(() => {
@@ -232,7 +253,7 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
 
       <div className='px-5'>
         <div className='h-auto max-h-[600px] overflow-y-auto'>
-          <h1>{parsedText?.artwork}</h1>
+          <h1>{workTitle}</h1>
           <div className={`mt-1 font-normal text-[20px] leading-[32px] tracking-[-0.02em]`}>
             {segments.map((segment, index) => (
               <p
@@ -345,10 +366,10 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
               
               <div>
                 <div className='w-[201px] h-[29px] font-semibold text-[18px] leading-[28.9px] tracking-[-1%] text-[#FFFFFF]'>
-                  {parsedText?.workTitle}
+                  {workTitle}
                 </div>
                 <div className='w-[201px] h-[24px] font-normal text-[16px] leading-[24px]tracking-[-1%] text-[#787B83]'>
-                  {parsedText?.author}
+                  {author}
                 </div>
               </div>
               
