@@ -93,7 +93,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const appreciationPoint = dataObject['감상 포인트'];
       const history = dataObject['미술사'];
       const source = dataObject['출처'];
-
+      console.log(workTitle);
       if(workTitle === null || workTitle.length > 50) {
         return res.status(500).json({ error: "검색을 다시 해주세요!" });
       }
