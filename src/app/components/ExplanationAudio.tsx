@@ -224,8 +224,12 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
         />
       </button>
 
-      <div className='px-5'>
-        <div className='h-auto max-h-[600px] overflow-y-auto'>
+      <div className='px-5 relative'>
+        <div className='max-h-[610px] overflow-y-auto'
+        style={{
+          willChange: "transform",  // 2. will-change 속성 추가
+          WebkitOverflowScrolling: "touch"  // 3. iOS 부드러운 스크롤 적용
+        }}>
           <h1>{workTitle}</h1>
           <div className={`mt-1 font-normal text-[20px] leading-[32px] tracking-[-0.02em]`}>
             {segments.map((segment, index) => (
@@ -328,20 +332,12 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
           `}</style>
 
           <div className='flex justify-center items-center h-full my-2'>
-            <div className='flex w-[335px] h-[55px] justify-between'>
-              {/* <Image 
-                src="" 
-                width={54}
-                height={54}
-                alt="작품 이미지"
-                className='w-[54px] h-[54px] rounded-[10px] blur-sm'
-              /> */}
-              
+            <div className='flex w-[335px] h-[55px] justify-between'>              
               <div>
-                <div className='max-w-[201px] max-h-[29px] font-semibold text-[18px] leading-[28.9px] tracking-[-1%] text-[#FFFFFF]'>
+                <div className='max-w-[201px] max-h-[29px] font-semibold text-[18px] tracking-[-1%] text-[#FFFFFF]'>
                   {workTitle}
                 </div>
-                <div className='max-w-[201px] max-h-[24px] font-normal text-[16px] leading-[24px]tracking-[-1%] text-[#787B83]'>
+                <div className='max-w-[201px] max-h-[24px] font-normal text-[16px] tracking-[-1%] text-[#787B83]'>
                   {author}
                 </div>
               </div>
