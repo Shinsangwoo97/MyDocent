@@ -224,12 +224,8 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
         />
       </button>
 
-      <div className='px-5 relative'>
-        <div className='max-h-[610px] overflow-y-auto'
-        style={{
-          willChange: "transform",  // 2. will-change 속성 추가
-          WebkitOverflowScrolling: "touch"  // 3. iOS 부드러운 스크롤 적용
-        }}>
+      <div className='px-5'>
+        <div className='max-h-[610px] overflow-y-scroll'>
           <h1>{workTitle}</h1>
           <div className={`mt-1 font-normal text-[20px] leading-[32px] tracking-[-0.02em]`}>
             {segments.map((segment, index) => (
