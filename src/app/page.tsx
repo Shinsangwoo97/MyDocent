@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Footer from './components/Footer';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -36,11 +36,18 @@ export default function Home() {
   const [warningMessage, setWarningMessage] = useState<string>(''); // 키워드 한 개 이상 선택 경고 메시지 상태
   const [isTextAreaFocused, setIsTextAreaFocused] = useState<boolean>(false); //사용자가 입력할 때 밑에 문구 생기게 하기 위함
   const router = useRouter();
-  const nickname = localStorage.getItem('nickname');   
+  let nickname;
 
-  if(nickname === null) {
-    router.refresh();
-  }
+  useEffect(() => {
+    // Only access localStorage in the browser
+    if (typeof window !== 'undefined') {
+      nickname = localStorage.getItem('nickname');   
+      
+      if (nickname === null) {
+        router.refresh();
+      }
+    }
+  }, [router]);
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);
