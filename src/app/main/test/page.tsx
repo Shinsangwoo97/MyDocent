@@ -8,14 +8,16 @@ export default function MultiLanguageOCR() {
   const [imageData, setImageData] = useState<string | null>(null);
 
   // 카메라 시작 함수
-  const startCamera = async () => {
+const startCamera = async () => {
     try {
-      const stream: MediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const stream: MediaStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { exact: "environment" } },
+      });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
     } catch (error) {
-      console.error('Error accessing camera: ', error);
+      console.error("Error accessing camera: ", error);
     }
   };
 
