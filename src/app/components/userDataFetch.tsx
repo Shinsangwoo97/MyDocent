@@ -6,11 +6,12 @@ import { usePathname } from "next/navigation";  // 현재 경로를 가져오는
 const UserDataFetch = () => {
   const [isClient, setIsClient] = useState(false);  // 클라이언트 여부 상태
   const pathname = usePathname();  // 현재 경로를 가져옵니다.
+  
+  if (typeof window === 'undefined') return null;
 
   // /main/login 페이지에서는 useRouter를 사용하지 않도록 설정
   useEffect(() => {
     if (pathname === "/main/login" || pathname === "/kakao/callback") return;  // 로그인 페이지에서는 실행하지 않음
-
     setIsClient(true);  // 클라이언트에서만 실행되도록 설정
 
     const fetchUserData = async () => {
@@ -18,7 +19,7 @@ const UserDataFetch = () => {
         const access_token = localStorage.getItem('access_token');
 
         if (!access_token) {
-            window.location.href = 'https://mydocent.vercel.app/main/login';
+            window.location.href = '/main/login';
         }
 
         const res = await fetch(`/api/auth/users/me`, {
@@ -30,7 +31,7 @@ const UserDataFetch = () => {
 
         if (!res.ok) {
           localStorage.removeItem('access_token');
-          window.location.href = 'https://mydocent.vercel.app/main/login';
+          window.location.href = '/main/login';
         }
 
         const result = await res.json();
@@ -39,14 +40,14 @@ const UserDataFetch = () => {
           localStorage.setItem('userId', result.userId);
         }
       } catch (error) {
-        window.location.href = 'https://mydocent.vercel.app/main/login';
+        window.location.href = '/main/login';
       }
     };
 
     fetchUserData();
   }, [pathname]);  // pathname도 의존성에 추가
 
-  if (!isClient || pathname === "https://mydocent.vercel.app/main/login") {
+  if (!isClient || pathname === "/main/login") {
     return null;  // /main/login 페이지에서는 렌더링되지 않도록 설정
   }
 
