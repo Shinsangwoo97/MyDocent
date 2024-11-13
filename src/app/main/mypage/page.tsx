@@ -31,6 +31,9 @@ const ActionButton: React.FC<ActionButtonProps> = ({ src, alt, text, onClick }) 
 );
 
 export default function Mypage() {
+
+  if (typeof window === 'undefined') return;  // 서버 환경일 경우 중단
+  
   const router = useRouter();
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 바텀 시트 상태 관리
   const [showAlert, setShowAlert] = useState(false); // 알림 상태 관리
