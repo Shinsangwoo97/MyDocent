@@ -33,10 +33,11 @@ const ActionButton: React.FC<ActionButtonProps> = ({ src, alt, text, onClick }) 
 export default function Mypage() {
   const router = useRouter();
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false); // 바텀 시트 상태 관리
-  const [name, setName] = useState(''); // 변경된 이름 저장
   const [showAlert, setShowAlert] = useState(false); // 알림 상태 관리
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false); // 로그아웃 모달 상태 관리
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false); // 탈퇴 모달 상태 관리
+  const userid = localStorage.getItem('userId');
+  const access_token = localStorage.getItem('access_token');
 
   const goBack = useCallback(() => {
     router.push('/');
@@ -73,8 +74,7 @@ export default function Mypage() {
   ];
 
   // 바텀 시트에서 입력한 이름을 받는 함수
-  const handleNameSubmit = (newName: string) => {
-    setName(newName); // 이름 업데이트
+  const handleNameSubmit = () => {
      // 이름 변경 로직 실행 후
      setShowAlert(true); // 알림 상태를 true로 설정
      setTimeout(() => setShowAlert(false), 3000); // 3초 후 알림 숨기기
@@ -88,12 +88,28 @@ export default function Mypage() {
   // 로그아웃 했을 때
   const handleLogoutClose = () => {
     setIsLogoutModalOpen(false);
+    localStorage.clear();
     router.push('/main/login');
   };
 
     // 탈퇴했을 때
-    const handleWithdrawClose = () => {
+    const handleWithdrawClose = async () => {
       setIsWithdrawModalOpen(false);
+      const res = await fetch(
+        `/api/auth/users/secession/${userid}`, 
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${access_token}`,
+          },
+        }
+    );
+      if (!res.ok) {
+        alert('탈퇴에 실패했습니다.');
+        return;
+      }
+      localStorage.clear();
       router.push('/main/login');
     };
 
@@ -122,13 +138,6 @@ export default function Mypage() {
         <div className="w-[375px] h-[69px] p-[16px_20px] gap-[10px]">
           <h1 className="w-[335px] h-[37px] font-semibold text-[26px] leading-[36.92px] tracking--1">내 정보</h1>
         </div>
-
-        {/* 변경된 이름 표시 */}
-        {name && (
-          <div className="w-[375px] p-[16px_20px]">
-            <p className="text-[20px] font-medium">{name} 님 반가워요!</p>
-          </div>
-        )}
 
         <div className="w-[375px] h-[286px] p-[16px_20px] gap-[10px]">
           {buttons.map((button, index) => (

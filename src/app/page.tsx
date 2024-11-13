@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Footer from './components/Footer';
 import Image from 'next/image';
-import { UserType } from "@/types/user";
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -34,20 +33,14 @@ export default function Home() {
 
   const [text, setText] = useState<string>(''); // 입력된 텍스트를 관리하는 상태
   const [isSendClicked, setIsSendClicked] = useState<boolean>(false); // 버튼 상태 관리
-  const [nickname, setNickName] = useState<string>(''); // 기본값 설정
   const [warningMessage, setWarningMessage] = useState<string>(''); // 키워드 한 개 이상 선택 경고 메시지 상태
   const [isTextAreaFocused, setIsTextAreaFocused] = useState<boolean>(false); //사용자가 입력할 때 밑에 문구 생기게 하기 위함
   const router = useRouter();
+  const nickname = localStorage.getItem('nickname');   
 
-  useEffect(() => {
-    if (warningMessage) {
-      const timer = setTimeout(() => {
-        setWarningMessage('');
-      }, 2000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [warningMessage]);
+  if(nickname === null) {
+    router.refresh();
+  }
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);
@@ -70,8 +63,6 @@ export default function Home() {
       text: text,
       uuid: uuidv4()
     };
-  
-    console.log("버튼 클릭");
   
     // 로컬 스토리지에 requestData를 저장하고 로딩 페이지로 이동
     localStorage.setItem('requestData', JSON.stringify(requestData));
@@ -98,47 +89,16 @@ export default function Home() {
     });
   };
   
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const access_token = localStorage.getItem('access_token');
-        const userid = localStorage.getItem('userid');
-        
-        if (!access_token || !userid) {
-          // router.push('/main/login');
-          return;
-        }
-
-        const res = await fetch(
-          `/api/auth/users/me/${userid}`,
-          {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${access_token}`
-            },
-          }
-        );
-        
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        const result: UserType = await res.json();
-        localStorage.setItem('nickname', result.nickname);
-        // API 응답에서 이름을 가져와서 설정
-        if (result.nickname) {
-          setNickName(result.nickname);
-          console.log("업데이트된 닉네임:", result.nickname); //작동 안됨
-        }
-      } catch (error) {
-        router.push('/main/login');
-      }
-    };
-
-    fetchUserData();
-  }, [router]); // 빈 배열을 넣어 컴포넌트가 마운트될 때 한 번만 실행
-
   if(!buttonData) return <p>데이터를 조회중입니다..</p>
+
+    if (warningMessage) {
+      const timer = setTimeout(() => {
+        setWarningMessage('');
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+
   return (
     <div className='font-wanted'>
       {warningMessage && ( // 경고 메시지 조건부 렌더링

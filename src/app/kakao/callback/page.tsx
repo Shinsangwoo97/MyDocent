@@ -47,15 +47,8 @@ export default function Home() {
             if (!res.ok) {
               throw new Error(`HTTP error! status: ${res.status}`);
             }
-      
             const result = await res.json();
-            console.log(result);
-            console.log(result.access_token);
-            // console.log(result.refresh_token);
-            // console.log(result.user_id);
             localStorage.setItem('access_token', result.access_token);
-            // localStorage.setItem('refresh_token', result.refresh_token);
-            // localStorage.setItem('userid', result.user_id);
           } catch (error) {
             console.error("로그인 요청 중 오류 발생:", error);
           } finally {

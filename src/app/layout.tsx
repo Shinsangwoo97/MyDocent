@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import UserDataFetch from "./components/userDataFetch"; // UserDataFetch를 import
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,6 +29,7 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
+           <UserDataFetch />  {/* 여기서 UserDataFetch를 포함 */}
           {children}
         </body>
     </html>

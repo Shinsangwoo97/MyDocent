@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { API } from "@/lib/API";
 import NameChangeClose from './modal/NameChangeClose';
 import Image from 'next/image';
 
@@ -17,7 +16,7 @@ function BottomSheet({
   const [name, setName] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   
-  const userid = localStorage.getItem('userid');
+  const userid = localStorage.getItem('userId');
   const access_token = localStorage.getItem('access_token');
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +40,7 @@ function BottomSheet({
     
     try {
       const res = await fetch(
-        `${API}/auth/users/me/${userid}`, 
+        `/api/auth/users/${userid}`, 
         {
           method: "PATCH",
           headers: {
@@ -55,11 +54,12 @@ function BottomSheet({
       );
 
       if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
+        localStorage.removeItem('access_token');
+        window.location.reload();
       }
 
-      const data = await res.json();
-      console.log('name update response:', data);
+      await res.json();
+      localStorage.setItem('nickname', name);
       onSubmit(name);
       onClose();
     } catch (error) {

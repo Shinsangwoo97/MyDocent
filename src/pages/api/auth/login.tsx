@@ -5,6 +5,7 @@ import { RowDataPacket } from 'mysql2';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { code } = req.body;
   const login_type = "kakao";
+  let userId: number;
 
   if (!code) {
     return res.status(400).json({ error: "Code가 없습니다." });
@@ -31,7 +32,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const tokenData = await tokenResponse.json();
-    const { access_token, refresh_token } = tokenData;
+    const { access_token, token_type, refresh_token, expires_in, refresh_token_expires_in, scope} = tokenData;
+
+    const currentTime = new Date(); // 현재 시간
+    const accessExpirationTime = new Date(currentTime.getTime() + expires_in * 1000); // 만료 시간 계산
+    const refreshExpiresTime = new Date(currentTime.getTime() + refresh_token_expires_in * 1000); // 만료 시간 계산
 
     // 2. 카카오 사용자 정보 요청
     const userInfoResponse = await fetch('https://kapi.kakao.com/v2/user/me', {
@@ -61,6 +66,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // 사용자 존재 확인 후 로직 처리
         if (result.length > 0) {
+          userId = result[0].user_id;
+          const sql = `
+          SELECT * FROM token WHERE user_id = ?
+          `;
+          const tokenresult = await pool.query<RowDataPacket[]>(sql, [userId]);
+          if (tokenresult[0].length > 0) {
+            const sql = `
+            UPDATE token
+              SET
+                access_token=?,
+                refresh_token=?,
+                access_token_expires_at= ?,
+                refresh_token_expires_at=?,
+                updated_at=NOW()
+              WHERE user_id = ?
+            `;
+            await pool.query<RowDataPacket[]>(sql, [access_token, refresh_token, accessExpirationTime, refreshExpiresTime, userId]);
+          } else {
+            const sql = `
+            INSERT INTO token
+              (token_id, user_id, token_type, access_token, refresh_token, access_token_expires_at, refresh_token_expires_at, created_at, updated_at, scope)
+              VALUES (NULL, ?, ?, ?, ?, ?, ?, now(), null, ?)
+            `;
+            await pool.query<RowDataPacket[]>(sql, [userId, token_type, access_token, refresh_token, accessExpirationTime, refreshExpiresTime, scope]);
+          }
           return true; // 사용자 존재함
         } else {
           return false; // 사용자 존재하지 않음
@@ -70,6 +100,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         throw e;
       }
     };
+
 
     const userExists = await selectUser();
 

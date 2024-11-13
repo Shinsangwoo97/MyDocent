@@ -1,6 +1,9 @@
 'use client';
+
 import Image from 'next/image';
 import { v4 as uuidv4 } from 'uuid'; // UUID 생성 함수
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 
 
@@ -10,6 +13,8 @@ export default function Login() {
   const redirectUri = process.env.NEXT_PUBLIC_REDIRECT_URI;
   const responseType = process.env.NEXT_PUBLIC_RESPONSE_TYPE;
   const clientSecret = process.env.NEXT_PUBLIC_CLIENT_SECRET;
+  const router = useRouter();
+  
   
   // 카카오 인증 URL 생성 함수
 const getKakaoAuthUrl = (uuid: string) => {
@@ -23,6 +28,14 @@ const getKakaoAuthUrl = (uuid: string) => {
     window.location.href = KAKAO_AUTH_URL; // 카카오 로그인 URL로 리다이렉트
     window.localStorage.setItem("uuid", generatedUuid)
   };
+
+  useEffect(() => {
+  const access_token = localStorage.getItem('access_token');
+
+    if (access_token) {
+      router.push('/');
+    }
+  }, [router]);
 
   return (
     <div className="text-center grid place-items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-['WantedSans']">

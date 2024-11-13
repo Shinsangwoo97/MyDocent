@@ -1,6 +1,6 @@
 
 export interface UserType {
-    id: string;
+    userId: string;
     sns_type: string;
     nickname: string;
     name: string;
