@@ -24,7 +24,6 @@ function BottomSheet({
     setName(newName);
   };
   
-  console.log('name:', name);
   if(name === null) {
     console.log('name is null');
   }

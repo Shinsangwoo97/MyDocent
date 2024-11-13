@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef  } from 'react';
 import Footer from './components/Footer';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -167,7 +167,10 @@ export default function Home() {
         onBlur={() => setIsTextAreaFocused(false)}
       />
       <div className='flex justify-between'>
-        <button className='w-[44px] h-[44px] rounded-[40px] p-[10px] gap-[10px] bg-[#1B1E1F]'>
+        <button 
+        className='w-[44px] h-[44px] rounded-[40px] p-[10px] gap-[10px] bg-[#1B1E1F]'
+        onClick={() => router.push('/main/test')}
+        >
         <Image 
             src="/button/scan.png" 
             alt="Loading Logo" 
