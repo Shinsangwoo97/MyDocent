@@ -6,7 +6,6 @@ export default function MultiLanguageOCR() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [imageData, setImageData] = useState<string | null>(null);
-  const [text, setText] = useState<string>('');
 
   // 카메라 시작 함수
   const startCamera = async () => {
@@ -69,7 +68,7 @@ export default function MultiLanguageOCR() {
       {imageData && <img src={imageData} alt="캡처된 이미지 또는 업로드된 이미지" />}
 
       {/* 추출된 텍스트 */}
-      {text && <p>추출된 텍스트: {text}</p>}
+      {/* {text && <p>추출된 텍스트: {text}</p>} */}
     </div>
   );
 }
