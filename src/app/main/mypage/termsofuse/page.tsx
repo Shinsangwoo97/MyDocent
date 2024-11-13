@@ -6,7 +6,7 @@ export default function TermsOfUse() {
   const router = useRouter();
 
   const handleClose = () => {
-    router.push('/main/mypage/');
+    router.push('/main/mypage');
   };
 
   return (
