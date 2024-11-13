@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef  } from 'react';
+import { useEffect, useState } from 'react';
 import Footer from './components/Footer';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
