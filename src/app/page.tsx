@@ -36,16 +36,42 @@ export default function Home() {
   const [warningMessage, setWarningMessage] = useState<string>(''); // 키워드 한 개 이상 선택 경고 메시지 상태
   const [isTextAreaFocused, setIsTextAreaFocused] = useState<boolean>(false); //사용자가 입력할 때 밑에 문구 생기게 하기 위함
   const router = useRouter();
-  let nickname;
+  const [nickname, setNickname] = useState<string | null>(null);
 
   useEffect(() => {
     // Only access localStorage in the browser
     if (typeof window !== 'undefined') {
-      nickname = localStorage.getItem('nickname');   
-      
-      if (nickname === null) {
-        router.refresh();
-      }
+      const fetchUserData = async () => {
+        try {
+          const access_token = localStorage.getItem('access_token');
+  
+          if (!access_token) {
+            window.location.href = '/main/login';
+            return;
+          }
+  
+          const res = await fetch(`/api/auth/users/me`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${access_token}`
+            },
+          });
+  
+          if (!res.ok) {
+            localStorage.removeItem('access_token');
+            window.location.href = '/main/login';
+            return;
+          }
+  
+          const result = await res.json();
+          if (result.nickname) {
+            setNickname(result.nickname);
+          }
+        } catch (error) {
+          window.location.href = '/main/login';
+        }
+      };
+    fetchUserData();
     }
   }, [router]);
 
