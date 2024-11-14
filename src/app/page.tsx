@@ -169,7 +169,7 @@ export default function Home() {
       <div className='flex justify-between'>
         <button 
         className='w-[44px] h-[44px] rounded-[40px] p-[10px] gap-[10px] bg-[#1B1E1F]'
-        onClick={() => router.push('/main/test')}
+        onClick={() => router.push('/main/test2')}
         >
         <Image 
             src="/button/scan.png" 
