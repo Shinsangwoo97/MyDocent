@@ -1,19 +1,26 @@
 "use client";
 
-import { useSearchParams } from "next/navigation"; // 쿼리 파라미터를 가져오는 훅
+import { useEffect, useState } from "react";
 
-export default function OcrImage() {
-  const searchParams = useSearchParams(); // URL 쿼리 파라미터를 가져옴
-  const image = searchParams ? searchParams.get("image") : null; // null 체크 후 "image" 값 추출
+export default function ImagePage() {
+  const [imageData, setImageData] = useState<string | null>(null);
 
-  if (!image) {
-    return <div>No image found</div>; // 이미지가 없으면 "이미지 없음" 출력
-  }
+  // 컴포넌트가 마운트되면 localStorage에서 이미지 데이터 가져오기
+  useEffect(() => {
+    const savedImage = sessionStorage.getItem("capturedImage");
+    if (savedImage) {
+      setImageData(savedImage);
+    }
+  }, []);
 
   return (
     <div className="flex flex-col items-center">
       <h1>Captured Image</h1>
-      <img src={decodeURIComponent(image)} alt="Captured Image" /> {/* 이미지 출력 */}
+      {imageData ? (
+        <img src={imageData} alt="Captured Image" />
+      ) : (
+        <p>No image found</p>
+      )}
     </div>
   );
 }

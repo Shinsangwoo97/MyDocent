@@ -62,8 +62,8 @@ export default function Home() {
     // 자동으로 새 페이지로 이동 (이미지가 캡처되었을 때)
     useEffect(() => {
       if (imageData) {
-        // 이미지 데이터를 URL 파라미터로 전달하면서 새 페이지로 이동
-        router.push(`/main/ocrimage?image=${encodeURIComponent(imageData)}`);
+        sessionStorage.setItem("capturedImage", imageData);
+        router.push('/main/ocrimage');
       }
     }, [imageData, router]);
 
@@ -216,14 +216,7 @@ export default function Home() {
             ref={fileInputRef} // ref로 접근
             style={{ display: "none" }} // 숨기기
           />
-
-        {/* 캡처된 이미지 표시 (직접 보여주지 않고 바로 새 페이지로 이동) */}
-        {imageData && (
-          <div>
-            <img src={imageData} alt="Captured" />
-          </div>
-        )}
-
+          
         <button
           className={`w-[44px] h-[44px] rounded-[40px] p-[10px] gap-[10px] ${isSendClicked ? 'bg-gradient-to-r from-[#8EBBFF] via-[#8D99FF] to-[#A4B8FF] shadow-custom-1 shadow-custom-2' : 'bg-[#1B1E1F]'}`}
           onClick={handleSendClick}
