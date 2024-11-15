@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Footer from './components/Footer';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -37,6 +37,27 @@ export default function Home() {
   const [isTextAreaFocused, setIsTextAreaFocused] = useState<boolean>(false); //사용자가 입력할 때 밑에 문구 생기게 하기 위함
   const router = useRouter();
   const [nickname, setNickname] = useState<string | null>(null);
+
+  const [imageData, setImageData] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // 파일 업로드 시 이미지 로드 함수
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const dataUrl = reader.result as string;
+        setImageData(dataUrl);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // 버튼 클릭 시 input 태그 활성화
+  const handleButtonClick = () => {
+    fileInputRef.current?.click(); // 숨겨진 input 태그 트리거
+  };
 
   useEffect(() => {
     // Only access localStorage in the browser
@@ -167,17 +188,29 @@ export default function Home() {
         onBlur={() => setIsTextAreaFocused(false)}
       />
       <div className='flex justify-between'>
-        <button 
-        className='w-[44px] h-[44px] rounded-[40px] p-[10px] gap-[10px] bg-[#1B1E1F]'
-        onClick={() => router.push('/main/test')}
+        <button
+          className="w-[44px] h-[44px] rounded-[40px] p-[10px] gap-[10px] bg-[#1B1E1F]"
+          onClick={handleButtonClick}
         >
-        <Image 
-            src="/button/scan.png" 
-            alt="Loading Logo" 
-            width={24} 
-            height={24} 
-            />
+          <Image
+            src="/button/scan.png"
+            alt="Camera Icon"
+            width={24}
+            height={24}
+          />
         </button>
+        {/* 숨겨진 input 태그 */}
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment" // 카메라 실행 요청
+            onChange={handleImageUpload}
+            ref={fileInputRef} // ref로 접근
+            style={{ display: "none" }} // 숨기기
+          />
+
+          {/* 캡처된 이미지 표시 */}
+          {imageData && <img src={imageData} alt="Captured" />}
         <button
           className={`w-[44px] h-[44px] rounded-[40px] p-[10px] gap-[10px] ${isSendClicked ? 'bg-gradient-to-r from-[#8EBBFF] via-[#8D99FF] to-[#A4B8FF] shadow-custom-1 shadow-custom-2' : 'bg-[#1B1E1F]'}`}
           onClick={handleSendClick}
