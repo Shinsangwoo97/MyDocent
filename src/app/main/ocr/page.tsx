@@ -19,11 +19,11 @@ export default function OCRRequest() {
     console.log(base64String);
 
     try {
-      const response = await fetch(APIGW_INVOKE_URL!, {
+      const response = await fetch(`${APIGW_INVOKE_URL}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-OCR-SECRET": SECRET_KEY!,
+          "X-OCR-SECRET": `${SECRET_KEY}`,
         },
         body: JSON.stringify({
           images: [
