@@ -83,6 +83,7 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
   const [highlighted, setHighlighted] = useState(true); // 하이라이트 상태 관리
   const [author, setAuthor] = useState<string | null>(null);
   const [workTitle, setWorkTitle] = useState<string | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false); // 스크롤 여부 상태
 
   useEffect(() => {
     setAuthor(artworkData.author);
@@ -210,24 +211,35 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
       playSegmentFromIndex(value, currentRate);
     }
   };
-  if(!segments) return <p>데이터를 조회중입니다..</p>
-  return (
-    <div className='font-wanted'>
-      <button
-        className='w-[375px] h-[56px] p-[16px_20px]'
-        onClick={handleGoHome}>
-        <Image 
-          src="/logo/playerlogo.svg" 
-          alt="Loading Logo" 
-          width={32} 
-          height={32} 
-        />
-      </button>
 
-      <div className='px-5'>
-        <div className='max-h-[610px] overflow-y-scroll'>
+  const handleSegmentClick = (index: number) => {
+    setCurrentSegment(index); // 현재 세그먼트 업데이트
+  
+    // 음성이 재생 중이라면 새 세그먼트부터 다시 재생
+    if (isPlaying) {
+      window.speechSynthesis.cancel();
+      playSegmentFromIndex(index, currentRate);
+    }
+  };
+  
+  return (
+    <div className='font-wanted h-screen flex flex-col'>
+      <header className="fixed top-0 w-full h-[56px] bg-[#0C0D0F]">
+        <button 
+          className='p-[16px_20px]'
+          onClick={handleGoHome}>
+          <Image 
+            src="/logo/playerlogo.svg" 
+            alt="Loading Logo" 
+            width={32} 
+            height={32} 
+          />
+        </button>
+      </header>
+
+        <div className='mt-[60px] mb-[170px] px-5 overflow-y-scroll '>
           <h1>{workTitle}</h1>
-          <div className={`mt-1 font-normal text-[20px] leading-[32px] tracking-[-0.02em]`}>
+          <div className={`mt-1 font-normal text-[20px]`}>
             {segments.map((segment, index) => (
               <p
                 key={index}
@@ -237,18 +249,15 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
                 className={`${
                   highlighted ? (index === currentSegment ? 'my-1 text-[#FFFFFF]' : 'm-0 text-[#FFFFFF4D]') : 'my-1 text-[#FFFFFF]' 
                 }`}
+                onClick={() => handleSegmentClick(index)}
               >
                 {segment.text}
               </p>
             ))}
-
-            <span className="text-white text-[15px] mb-2">작품에 대해 더 궁금한 점이 있으신가요?</span>
-
           </div>
         </div>
-      </div>
 
-      <div className='absolute fixed bottom-0 inset-x-0 z-10'>
+      <div className='fixed bottom-0 inset-x-0 z-10'>
         <div className='flex justify-end items-center'>
           <ReviewButtons
             openReview={openReview}
