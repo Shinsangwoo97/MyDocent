@@ -1,47 +1,10 @@
 "use client";
-interface ButtonData {
-  id: number;
-  emoji: string;
-  text: string;
-}
-
-interface ReviewButtonsProps {
-  openReview: boolean;
-  review: number | null;
-  handleChooseClick: (id: number) => void;
-}
-
-const ReviewButtons: React.FC<ReviewButtonsProps> = ({ openReview, review, handleChooseClick }) => {
-  const buttons: ButtonData[] = [
-    { id: 1, emoji: '🤩', text: '재미있어요' },
-    { id: 2, emoji: '😮', text: '놀라워요' },
-    { id: 3, emoji: '🙂', text: '좋아요' },
-    { id: 4, emoji: '😓', text: '아쉬워요' },
-  ];
-
-  if (!openReview) return null;
-
-  return (
-    <div className='w-auto h-auto rounded-[30px] border border-[#2C3032] p-[10px] gap-[6px] bg-[#0C0D0F] flex flex-col'>
-      {buttons.map(({ id, emoji, text }) => (
-        <button
-          key={id}
-          onClick={() => handleChooseClick(id)}
-          className={`font-normal w-auto h-[44px] rounded-[30px] p-[10px_12px] gap-[4px] text-[16px] leading-[24px] tracking-[-1%] my-1 ${
-            review === id ? 'bg-[#FFFFFF] text-[#000000]' : 'bg-[#1B1E1F]'}`}
-        >
-          {emoji} {text}
-        </button>
-      ))}
-    </div>
-  );
-};
-ReviewButtons.displayName = 'ReviewButtons';
-
-
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import AudioHeader from './Audio/AudioHeader';
+import SegmentList from './Audio/SegmentList';
+import Buttons from './Audio/Buttons';
+import AudioControl from './Audio/AudioControl';
 
 interface TextSegment {
   text: string;
@@ -172,6 +135,16 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     }
   };
 
+  //segment 선택 시 음성도 함께 이동
+  const handleSegmentClick = (index: number) => {
+    setCurrentSegment(index); // 현재 세그먼트 업데이트
+  
+    if (isPlaying) { // 음성이 재생 중이라면 새 세그먼트부터 다시 재생
+      window.speechSynthesis.cancel();
+      playSegmentFromIndex(index, currentRate);
+    }
+  };
+
   const handlePlayPause = () => {
     if (isPlaying) {
       window.speechSynthesis.cancel();
@@ -186,12 +159,6 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
   const handleReviewClick = () => {
     setIsReviewClick(!isReviewClick);
     setOpenReview(!openReview);
-  };
-
-  const handleChooseClick = (id: number) => { 
-    setReview(id);
-    setOpenReview(false);
-    setIsReviewClick(false);
   };
 
   useEffect(() => {
@@ -211,170 +178,42 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
       playSegmentFromIndex(value, currentRate);
     }
   };
-
-  const handleSegmentClick = (index: number) => {
-    setCurrentSegment(index); // 현재 세그먼트 업데이트
-  
-    // 음성이 재생 중이라면 새 세그먼트부터 다시 재생
-    if (isPlaying) {
-      window.speechSynthesis.cancel();
-      playSegmentFromIndex(index, currentRate);
-    }
-  };
   
   return (
     <div className='font-wanted h-screen flex flex-col'>
-      <header className="fixed top-0 w-full h-[56px] bg-[#0C0D0F]">
-        <button 
-          className='p-[16px_20px]'
-          onClick={handleGoHome}>
-          <Image 
-            src="/logo/playerlogo.svg" 
-            alt="Loading Logo" 
-            width={32} 
-            height={32} 
-          />
-        </button>
-      </header>
-
-        <div className='mt-[60px] mb-[170px] px-5 overflow-y-scroll '>
-          <h1>{workTitle}</h1>
-          <div className={`mt-1 font-normal text-[20px]`}>
-            {segments.map((segment, index) => (
-              <p
-                key={index}
-                ref={(el) => {
-                  segmentRefs.current[index] = el;
-                }}
-                className={`${
-                  highlighted ? (index === currentSegment ? 'my-1 text-[#FFFFFF]' : 'm-0 text-[#FFFFFF4D]') : 'my-1 text-[#FFFFFF]' 
-                }`}
-                onClick={() => handleSegmentClick(index)}
-              >
-                {segment.text}
-              </p>
-            ))}
-          </div>
-        </div>
+      <AudioHeader />
+      <SegmentList
+        segments={segments}
+        currentSegment={currentSegment}
+        handleSegmentClick={handleSegmentClick}
+        highlighted={highlighted}
+        workTitle={workTitle}
+      />
 
       <div className='fixed bottom-0 inset-x-0 z-10'>
-        <div className='flex justify-end items-center'>
-          <ReviewButtons
-            openReview={openReview}
-            review={review}
-            handleChooseClick={handleChooseClick}
-          />
+        <Buttons
+          isPlaying={isPlaying}
+          togglePlaybackRate={togglePlaybackRate}
+          toggleHighlight={toggleHighlight}
+          currentRate={playbackRates[rateIndex]}
+          rateIndex={rateIndex}
+          handlePlayPause={handlePlayPause}
+          playbackRates={playbackRates}
+          handleReviewClick={handleReviewClick}
+          isReviewClick={isReviewClick}
+        />
 
-          <div className='h-[178px] p-[0px_16px_14px_20px] flex items-center'>
-            <div className='flex flex-col w-[44px] h-[164px]'>
-              <button className='w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]'
-                onClick={toggleHighlight}>
-                <Image 
-                  src="/logo/pen.svg" 
-                  alt="Loading Logo" 
-                  width={32} 
-                  height={32} 
-                />
-              </button>
+        <AudioControl
+          currentSegment={currentSegment}
+          segmentsLength={segments.length} // 배열 길이만 전달
+          handleScrollChange={handleScrollChange}
+          workTitle={workTitle}
+          author={author}
+          isPlaying={isPlaying}
+          handlePlayPause={handlePlayPause}
+          handleGoHome={handleGoHome}
+        />
 
-              <div className='my-4 flex justify-center w-[44px] h-[44px] rounded-[40px] p-[10px] gap-1 bg-[#151718] font-semibold text-[12px]'>
-                <button onClick={togglePlaybackRate}>
-                  {playbackRates[rateIndex]}
-                </button>
-              </div>
-
-              <button 
-                onClick={handleReviewClick}
-                className={isReviewClick ? 'flex justify-center items-center w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]' : 'flex justify-center items-center w-[44px] h-[44px] rounded-[40px] p-[10px] gap-1 bg-[#151718]'}
-              >
-                {isReviewClick ? 
-                  <Image 
-                    src="/logo/close.svg" 
-                    alt="Loading Logo" 
-                    width={32} 
-                    height={32} 
-                  />
-                  :
-                  <Image 
-                    src="/logo/shape.svg" 
-                    alt="Loading Logo" 
-                    width={32} 
-                    height={32} 
-                  />
-                }
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className='bg-[#0C0D0F]'>
-          <input
-            type="range"
-            min="0"
-            max={segments.length - 1}
-            value={currentSegment}
-            onChange={handleScrollChange}
-            className="w-full h-[4px] rounded-lg appearance-none"
-            style={{
-              background: `linear-gradient(to right, white 0%, white ${(currentSegment / (segments.length - 1)) * 100}%, #484C52 ${(currentSegment / (segments.length - 1)) * 100}%, #484C52 100%)`,
-            }}
-          />
-          <style jsx>{`
-            input[type="range"]::-webkit-slider-thumb {
-              -webkit-appearance: none;
-              appearance: none;
-              width: 0;
-              height: 0;
-              background-color: transparent;
-            }
-
-            input[type="range"]::-moz-range-thumb {
-              appearance: none;
-              width: 0;
-              height: 0;
-              background-color: transparent;
-            }
-          `}</style>
-
-          <div className='flex justify-center items-center h-full my-2'>
-            <div className='flex w-[335px] h-[55px] justify-between'>              
-              <div>
-                <div className='max-h-[29px] font-semibold text-[18px] leading-[28.9px] tracking-[-1%] text-[#FFFFFF]'>
-                  {workTitle}
-                </div>
-                <div className='max-h-[24px] font-normal text-[16px] leading-[24px]tracking-[-1%] text-[#787B83]'>
-                  {author}
-                </div>
-              </div>
-              
-              <div className='mt-2'>
-                <button onClick={handlePlayPause}>
-                  {isPlaying ? 
-                      <Image 
-                      src="/button/Pausebutton.svg" 
-                      alt="Loading Logo" 
-                      width={32} 
-                      height={32}/>
-                    :
-                      <Image 
-                      src="/button/Playbutton.svg" 
-                      alt="Loading Logo" 
-                      width={32} 
-                      height={32}/>
-                  }
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className='flex justify-center items-center h-full'>
-            <button 
-              className='mb-7 w-[335px] h-[48px] rounded-[30px] p-[12px] gap-[8px] bg-[#1B1E1F]'
-              onClick={handleGoHome}>
-              새로운 작품 검색
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );
