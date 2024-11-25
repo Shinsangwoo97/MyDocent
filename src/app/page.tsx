@@ -41,6 +41,8 @@ export default function Home() {
   const [imageData, setImageData] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const ocr = localStorage.getItem('text');
+
   // //파일 업로드 시 이미지 로드 함수
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -63,9 +65,16 @@ export default function Home() {
     useEffect(() => {
       if (imageData) {
         sessionStorage.setItem("capturedImage", imageData);
-        router.push('/main/ocrimage');
+        router.push('/main/ocr');
       }
     }, [imageData, router]);
+
+    useEffect(() => {
+      if(ocr){
+        setText(ocr);
+        setIsSendClicked(true);
+      }
+    }, [ocr]);
 
   useEffect(() => {
     // Only access localStorage in the browser

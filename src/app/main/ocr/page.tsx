@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
 
 type Field = {
   valueType: string;
@@ -20,6 +21,7 @@ export default function OCRRequest() {
   const SECRET_KEY = process.env.NEXT_PUBLIC_OCR_SECRET_KEY;
   const [imageData, setImageData] = useState<string | null>(null);
   const [inferText, setInferText] = useState<string | null>(null);
+  const router = useRouter();
 
   // Base64 데이터를 사용하는 요청
   const requestWithBase64 = async () => {
@@ -70,42 +72,26 @@ export default function OCRRequest() {
       console.warn("Base64 요청 중 오류:", error);
     }
   };
-  console.log("합쳐진 텍스트:", inferText);
+  if(inferText) {
+    localStorage.setItem('text', inferText.replace(/^(.{76}).*$/, "$1"));
+    router.push('/');
+  }
 
-  // 파일 업로드 시 이미지 로드 함수
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const dataUrl = reader.result as string;
-        setImageData(dataUrl);
-      };
-      reader.readAsDataURL(file);
+  // 컴포넌트가 마운트되면 localStorage에서 이미지 데이터 가져오기
+  useEffect(() => {
+    const savedImage = sessionStorage.getItem("capturedImage");
+    if (savedImage) {
+      setImageData(savedImage);
     }
-  };
+    if(imageData) {
+      requestWithBase64();
+    }
+  }, [imageData]);
 
   return (
     <div className="flex flex-col items-center">
-      {/* 파일 업로드 부분 (카메라 실행) */}
-      <div>
-        <input
-          type="file"
-          accept="image/*"
-          capture="environment" // 카메라 실행 요청
-          onChange={handleImageUpload}
-        />
-      </div>
-
       {/* 캡처된 이미지 표시 */}
       {imageData && <img src={imageData} alt="캡처된 이미지" />}
-      
-      <button
-        className="p-2 bg-blue-500 text-white rounded"
-        onClick={requestWithBase64}
-      >
-        Base64 요청 보내기
-      </button>
 
       {/* 추출된 전체 텍스트 표시 */}
       {inferText && (
