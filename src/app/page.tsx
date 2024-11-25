@@ -40,8 +40,7 @@ export default function Home() {
 
   const [imageData, setImageData] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const ocr = localStorage.getItem('text');
+  const [ocrText, setOcrText] = useState<string | null>(null);
 
   // //파일 업로드 시 이미지 로드 함수
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,11 +69,11 @@ export default function Home() {
     }, [imageData, router]);
 
     useEffect(() => {
-      if(ocr){
-        setText(ocr);
+      if(ocrText){
+        setText(ocrText);
         setIsSendClicked(true);
       }
-    }, [ocr]);
+    }, [ocrText]);
 
   useEffect(() => {
     // Only access localStorage in the browser
@@ -169,6 +168,11 @@ export default function Home() {
 
       return () => clearTimeout(timer);
     }
+
+    useEffect(() => {
+      const text = localStorage.getItem("text");
+      setOcrText(text);
+    }, []);
 
   return (
     <div className='font-wanted'>
