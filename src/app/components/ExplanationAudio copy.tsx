@@ -40,8 +40,15 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const [isReviewClick, setIsReviewClick] = useState(false);
   const [openReview, setOpenReview] = useState(false);
+  const [highlighted, setHighlighted] = useState(true); // 하이라이트 상태 관리
   const [author, setAuthor] = useState<string | null>(null);
   const [workTitle, setWorkTitle] = useState<string | null>(null);
+
+  
+  
+  const toggleHighlight = () => {
+    setHighlighted((prev) => !prev); // 버튼 클릭 시 하이라이트 상태 토글
+  };
 
   const handleGoHome = useCallback(() => {
     router.push('/');
@@ -115,7 +122,16 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     };
   }, []);
 
-
+  const handleScrollChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    setCurrentSegment(value);
+    
+    // 구간 이동 시 자동 재생 로직 추가
+    if (isPlaying) {
+      window.speechSynthesis.cancel();
+      playSegmentFromIndex(value, currentRate);
+    }
+  };
 
   useEffect(() => {
     setAuthor(artworkData.author);
@@ -180,6 +196,16 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
       <div className='flex justify-end items-center'>
         <div className='h-[178px] p-[0px_16px_14px_20px] flex items-center'>
           <div className='flex flex-col w-[44px] h-[164px]'>
+            <button className='w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]'
+              onClick={toggleHighlight}>
+              <Image 
+                src="/logo/pen.svg" 
+                alt="Loading Logo" 
+                width={32} 
+                height={32} 
+              />
+            </button>
+
             <div className='my-4 flex justify-center w-[44px] h-[44px] rounded-[40px] p-[10px] gap-1 bg-[#151718] font-semibold text-[12px]'>
               <button onClick={togglePlaybackRate}>
                 {playbackRates[rateIndex]}
@@ -288,7 +314,7 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
         />
       </button>
 
-      {/* <div className='px-5'>
+      <div className='px-5'>
         <div className='max-h-[610px] overflow-y-scroll'>
           <h1>{workTitle}</h1>
           <div className={`mt-1 font-normal text-[20px] leading-[32px] tracking-[-0.02em]`}>
@@ -310,9 +336,9 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
 
           </div>
         </div>
-      </div> */}
+      </div>
 
-      {/* <div className='absolute fixed bottom-0 inset-x-0 z-10'>
+      <div className='absolute fixed bottom-0 inset-x-0 z-10'>
         <div className='flex justify-end items-center'>
           <div className='h-[178px] p-[0px_16px_14px_20px] flex items-center'>
             <div className='flex flex-col w-[44px] h-[164px]'>
@@ -424,7 +450,7 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
             </button>
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };
