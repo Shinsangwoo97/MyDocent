@@ -165,6 +165,7 @@ export default function Home() {
   };
   
   if(!buttonData) return <p>데이터를 조회중입니다..</p>
+  if(!nickname) return <p>데이터를 조회중입니다..</p>
 
     if (warningMessage) {
       const timer = setTimeout(() => {
