@@ -39,7 +39,7 @@ const ReviewButtons: React.FC<ReviewButtonsProps> = ({ openReview, review, handl
 ReviewButtons.displayName = 'ReviewButtons';
 
 
-import { useState, useRef, useEffect } from 'react';
+import { useCallback, useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
@@ -123,12 +123,8 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     setHighlighted((prev) => !prev); // 버튼 클릭 시 하이라이트 상태 토글
   };
 
-  const handleGoHome = () => {
+  const handleGoHome = useCallback(() => {
     router.push('/');
-  };
-
-  useEffect(() => {
-    if (!router) return; // router 초기화 확인
   }, [router]);
 
   const currentRate = playbackRates[rateIndex]; // 현재 재생 속도
