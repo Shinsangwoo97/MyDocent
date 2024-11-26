@@ -7,10 +7,11 @@ import { ArtworkData } from "@/types/artworkdata";
 
 export default function Player() {
   const [artworkData, setArtworkData] = useState<ArtworkData | undefined>();
+  const [data, setData] = useState<string | null>(null);
 
   useEffect(() => {
     // 세션 스토리지에서 데이터 가져오기
-    const data = sessionStorage.getItem('artworkData');
+    setData(sessionStorage.getItem('artworkData'));
     
     if (data) {
       try {
@@ -25,6 +26,8 @@ export default function Player() {
       setArtworkData(undefined);
     }
   }, []);
+
+  if(!data) return <p>데이터 조회중입니다..</p>;
 
   return (
     <>
