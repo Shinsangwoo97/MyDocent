@@ -40,7 +40,6 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const [isReviewClick, setIsReviewClick] = useState(false);
   const [openReview, setOpenReview] = useState(false);
-  const [review, setReview] = useState<number | null>(null);
   const [highlighted, setHighlighted] = useState(true); // 하이라이트 상태 관리
   const [author, setAuthor] = useState<string | null>(null);
   const [workTitle, setWorkTitle] = useState<string | null>(null);
