@@ -273,7 +273,7 @@ export default function Home() {
 
   return (
     <div className='font-wanted'>
-      {warningMessage && ( // 경고 메시지 조건부 렌더링
+      {warningMessage ? ( // 경고 메시지 조건부 렌더링
         <div className="absolute top-[74px] left-1/2 -translate-x-1/2 p-[10px_26px] rounded-[30px] border border-[#522e35] flex items-center justify-center whitespace-nowrap bg-[#32191e]">
           <Image 
             src="/button/warning.svg" 
@@ -283,7 +283,7 @@ export default function Home() {
           />
           <span className="ml-2 text-[#ffd2e5]">{warningMessage}</span>
         </div>
-      )}
+      ): null}
       <div className="grid place-items-left absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#0C0D0F]">
         <div>
             <h1 className="font-semibold text-[26px] leading-[36.9px] tracking-[-0.26px] my-2 bg-gradient-to-r from-[#8EBBFF] via-[#8D99FF] to-[#A4B8FF] bg-clip-text text-transparent bg-[length:500%_auto] animate-[textShine_4s_ease-out_infinite]">
@@ -352,9 +352,9 @@ export default function Home() {
     </div>
 
           <div className='mt-2'>
-            {isTextAreaFocused && (
+            {isTextAreaFocused ? (
               <span className='text-[#787b83] text-[15px]'>작품과 작가 정보를 모두 입력해주세요!</span>
-            )}
+            ): null}
             {/* MVP 이후 2차 기능 추가 */}
             {/* <button className='rounded-full p-3 mt-4 bg-gray-800 flex'>
             <Electricbulb /> '모네부터 앤디워홀'을 관람하시나요?
