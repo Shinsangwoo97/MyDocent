@@ -67,7 +67,7 @@ interface AudioplayerProps {
   };
 }
 
-const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
+const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSegment, setCurrentSegment] = useState<number>(0);
@@ -507,4 +507,4 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
   );
 };
 
-export default TTSWithScroll;
+export default ExplanationAudio;

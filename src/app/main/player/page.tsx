@@ -1,13 +1,12 @@
 'use client'
 
 import { useEffect, useState } from "react";
+import ExplanationAudio from '../../components/ExplanationAudio';
 import Error from '../error/page';
 import { ArtworkData } from "@/types/artworkdata";
-import { useRouter } from 'next/navigation';
 
 export default function Player() {
   const [artworkData, setArtworkData] = useState<ArtworkData | undefined>();
-  const router = useRouter();
 
   useEffect(() => {
     // 세션 스토리지에서 데이터 가져오기
@@ -30,12 +29,7 @@ export default function Player() {
   return (
     <>
       {artworkData ? (
-        // <Audioplayer artworkData={artworkData} />
-        <div>
-          <button onClick={() => router.push('/')}>뒤로가기</button>
-          <h1>음원 재생 페이지</h1>
-          <p>음원 재생 페이지입니다.</p>
-        </div>
+        <ExplanationAudio artworkData={artworkData} />
       ) : (
         <Error />
       )}
