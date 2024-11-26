@@ -127,6 +127,10 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     router.push('/');
   };
 
+  useEffect(() => {
+    if (!router) return; // router 초기화 확인
+  }, [router]);
+
   const currentRate = playbackRates[rateIndex]; // 현재 재생 속도
 
   const togglePlaybackRate = () => { // 재생 속도 순환 함수
