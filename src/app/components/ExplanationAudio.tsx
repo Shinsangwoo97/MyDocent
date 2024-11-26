@@ -44,42 +44,8 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
   const [author, setAuthor] = useState<string | null>(null);
   const [workTitle, setWorkTitle] = useState<string | null>(null);
 
-  if(!artworkData) return <p>작품 데이터를 불러오는 중입니다...</p>
   
-  useEffect(() => {
-    setAuthor(artworkData.author);
-    setWorkTitle(artworkData.workTitle);
-    const workIntro = artworkData.workIntro;
-    const authorIntro = artworkData.authorIntro;
-    const workBackground = artworkData.workBackground;
-    const appreciationPoint = artworkData.appreciationPoint;
-    const history = artworkData.history;
-
-    const text = `
-    작품소개
-    ${workIntro}
-    작가소개
-    ${authorIntro}
-    작품배경
-    ${workBackground}
-    감상포인트
-    ${appreciationPoint}
-    미술사
-    ${history}
-    `
-
-    // 문단 단위로 나누고 배열로 변환
-    const segments = text
-      .split(/\n+/) // 줄 바꿈을 기준으로 나누기 (한 문단씩 처리)
-      .map((sentence, idx): { text: string; startTime: number } => ({
-        text: sentence.trim(),
-        startTime: idx * 5, // 재생 시작 시간 설정 (예시로 5초 간격 설정)
-      }))
-      .filter((segment) => segment.text); // 빈 문장은 필터링
-
-    // `setSegments`에 설정
-    setSegments(segments);
-  }, [artworkData]);
+ 
   
   const toggleHighlight = () => {
     setHighlighted((prev) => !prev); // 버튼 클릭 시 하이라이트 상태 토글
@@ -101,18 +67,7 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     }
   };
 
-  useEffect(() => {
-    if (isPlaying && synthRef.current) {
-      const utterance = synthRef.current;
-      utterance.text = segments[currentSegment]?.text || '';
-      utterance.rate = currentRate;
-      window.speechSynthesis.speak(utterance);
-    }
-
-    if (segmentRefs.current[currentSegment]) {
-      segmentRefs.current[currentSegment]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, [currentSegment, isPlaying, currentRate, segments]);
+  
 
   const playSegmentFromIndex = (index: number, rate: number) => {
     if (index < segments.length) {
@@ -149,12 +104,7 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     setOpenReview(!openReview);
   };
 
-  useEffect(() => {
-    return () => {
-      window.speechSynthesis.cancel();
-      currentUtteranceRef.current = null;
-    };
-  }, []);
+  
 
   const handleScrollChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -166,6 +116,64 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
       playSegmentFromIndex(value, currentRate);
     }
   };
+
+  useEffect(() => {
+    setAuthor(artworkData.author);
+    setWorkTitle(artworkData.workTitle);
+    const workIntro = artworkData.workIntro;
+    const authorIntro = artworkData.authorIntro;
+    const workBackground = artworkData.workBackground;
+    const appreciationPoint = artworkData.appreciationPoint;
+    const history = artworkData.history;
+
+    const text = `
+    작품소개
+    ${workIntro}
+    작가소개
+    ${authorIntro}
+    작품배경
+    ${workBackground}
+    감상포인트
+    ${appreciationPoint}
+    미술사
+    ${history}
+    `
+
+    // 문단 단위로 나누고 배열로 변환
+    const segments = text
+      .split(/\n+/) // 줄 바꿈을 기준으로 나누기 (한 문단씩 처리)
+      .map((sentence, idx): { text: string; startTime: number } => ({
+        text: sentence.trim(),
+        startTime: idx * 5, // 재생 시작 시간 설정 (예시로 5초 간격 설정)
+      }))
+      .filter((segment) => segment.text); // 빈 문장은 필터링
+
+    // `setSegments`에 설정
+    setSegments(segments);
+  }, [artworkData]);
+
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+      currentUtteranceRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isPlaying && synthRef.current) {
+      const utterance = synthRef.current;
+      utterance.text = segments[currentSegment]?.text || '';
+      utterance.rate = currentRate;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    if (segmentRefs.current[currentSegment]) {
+      segmentRefs.current[currentSegment]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [currentSegment, isPlaying, currentRate, segments]);
+
+  if(!artworkData) return <p>작품 데이터를 불러오는 중입니다...</p>
+
   if(!segments) return (
     <div className='font-wanted'>
     <button
