@@ -26,8 +26,6 @@ export default function Player() {
     }
   }, []);
 
-  if(!artworkData) return <p>데이터 조회중</p>;
-
   return (
     <>
       {artworkData ? (

@@ -344,6 +344,9 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     </div>
   </div>
 );
+  if(workTitle) return <p>작품명 조회중...</p>
+  if(author) return <p>작가 조회중...</p>
+
   return (
     <div className='font-wanted'>
       <button
