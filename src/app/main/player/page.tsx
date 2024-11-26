@@ -5,7 +5,7 @@ import Error from '../error/page';
 import { ArtworkData } from "@/types/artworkdata";
 import dynamic from 'next/dynamic';
 
-const Audioplayer = dynamic(() => import('../../components/ExplanationAudio'), { ssr: false });
+const Audioplayer = dynamic(() => import('@/components/ExplanationAudio'), { ssr: false });
 
 export default function Player() {
   const [artworkData, setArtworkData] = useState<ArtworkData | undefined>();
