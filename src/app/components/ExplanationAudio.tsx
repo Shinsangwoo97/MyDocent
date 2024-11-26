@@ -44,6 +44,8 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
   const [author, setAuthor] = useState<string | null>(null);
   const [workTitle, setWorkTitle] = useState<string | null>(null);
 
+  if(!artworkData) return <p>작품 데이터를 불러오는 중입니다...</p>
+  
   useEffect(() => {
     setAuthor(artworkData.author);
     setWorkTitle(artworkData.workTitle);
