@@ -165,7 +165,103 @@ export default function Home() {
   };
   
   if(!buttonData) return <p>데이터를 조회중입니다..</p>
-  if(!nickname) return <p>데이터를 조회중입니다..</p>
+  if(!nickname) return (
+    <div className='font-wanted'>
+    {warningMessage && ( // 경고 메시지 조건부 렌더링
+      <div className="absolute top-[74px] left-1/2 -translate-x-1/2 p-[10px_26px] rounded-[30px] border border-[#522e35] flex items-center justify-center whitespace-nowrap bg-[#32191e]">
+        <Image 
+          src="/button/warning.svg" 
+          alt="Loading Logo" 
+          width={14} 
+          height={14} 
+        />
+        <span className="ml-2 text-[#ffd2e5]">{warningMessage}</span>
+      </div>
+    )}
+    <div className="grid place-items-left absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#0C0D0F]">
+      <div>
+          <h1 className="font-semibold text-[26px] leading-[36.9px] tracking-[-0.26px] my-2 bg-gradient-to-r from-[#8EBBFF] via-[#8D99FF] to-[#A4B8FF] bg-clip-text text-transparent bg-[length:500%_auto] animate-[textShine_4s_ease-out_infinite]">
+            <span className="block">  님 궁금한 작품이 있나요?</span>
+            <span className="block">지금 질문해 보세요</span>  
+          </h1>
+        <h3 className="mt-6 font-normal text-[15px] leading-[21px] tracking--1 text-[#787B83]">원하는 설명 키워드를 모두 골라주세요</h3>
+        <div className="mt-3 mb-5 border-solid">
+          {buttonData.map((button, index) => (
+            <Button key={index} button={button} onClick={() => handleClick(index)} />
+          ))}
+        </div>
+        <div className='w-[335px] h-[164px] rounded-[20px] p-[16px] gap-[6px] bg-[#151718]'>
+    <textarea
+      className='w-[303px] h-[82px] bg-[#151718] placeholder-[#484C52]'
+      placeholder={`작품 이름과 작가 이름을 알려주세요!\n예) 해바라기, 고흐`}
+      value={text}
+      onChange={handleTextChange}
+      onFocus={() => setIsTextAreaFocused(true)}
+      onBlur={() => setIsTextAreaFocused(false)}
+    />
+    <div className='flex justify-between'>
+      <button
+        className="w-[44px] h-[44px] rounded-[40px] p-[10px] gap-[10px] bg-[#1B1E1F]"
+        onClick={handleButtonClick}
+      >
+        <Image
+          src="/button/scan.png"
+          alt="Camera Icon"
+          width={24}
+          height={24}
+        />
+      </button>
+      {/* 숨겨진 input 태그 */}
+        <input
+          type="file"
+          accept="image/*"
+          capture="environment" // 카메라 실행 요청
+          onChange={handleImageUpload}
+          ref={fileInputRef} // ref로 접근
+          style={{ display: "none" }} // 숨기기
+        />
+        
+      <button
+        className={`w-[44px] h-[44px] rounded-[40px] p-[10px] gap-[10px] ${isSendClicked ? 'bg-gradient-to-r from-[#8EBBFF] via-[#8D99FF] to-[#A4B8FF] shadow-custom-1 shadow-custom-2' : 'bg-[#1B1E1F]'}`}
+        onClick={handleSendClick}
+        disabled={!isSendClicked} // 텍스트가 없을 때 버튼 비활성화
+      >
+        {isSendClicked ? 
+        <Image 
+        src="/button/send.png" 
+        alt="Loading Logo" 
+        width={24} 
+        height={24} 
+        />
+        : 
+        <Image 
+        src="/button/send.png" 
+        alt="Loading Logo" 
+        width={24} 
+        height={24} 
+        />
+        }
+      </button>
+    </div>
+  </div>
+
+        <div className='mt-2'>
+          {isTextAreaFocused && (
+            <span className='text-[#787b83] text-[15px]'>작품과 작가 정보를 모두 입력해주세요!</span>
+          )}
+          {/* MVP 이후 2차 기능 추가 */}
+          {/* <button className='rounded-full p-3 mt-4 bg-gray-800 flex'>
+          <Electricbulb /> '모네부터 앤디워홀'을 관람하시나요?
+            </button> */}
+        </div>
+        
+      </div>
+    </div>
+    <div className='fixed bottom-7 right-3'>
+          <Footer />
+    </div>
+  </div>
+  );
 
     if (warningMessage) {
       const timer = setTimeout(() => {
