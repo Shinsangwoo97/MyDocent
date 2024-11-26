@@ -1,43 +1,4 @@
 "use client";
-interface ButtonData {
-  id: number;
-  emoji: string;
-  text: string;
-}
-
-interface ReviewButtonsProps {
-  openReview: boolean;
-  review: number | null;
-  handleChooseClick: (id: number) => void;
-}
-
-const ReviewButtons: React.FC<ReviewButtonsProps> = ({ openReview, review, handleChooseClick }) => {
-  const buttons: ButtonData[] = [
-    { id: 1, emoji: '🤩', text: '재미있어요' },
-    { id: 2, emoji: '😮', text: '놀라워요' },
-    { id: 3, emoji: '🙂', text: '좋아요' },
-    { id: 4, emoji: '😓', text: '아쉬워요' },
-  ];
-
-  if (!openReview) return null;
-
-  return (
-    <div className='w-auto h-auto rounded-[30px] border border-[#2C3032] p-[10px] gap-[6px] bg-[#0C0D0F] flex flex-col'>
-      {buttons.map(({ id, emoji, text }) => (
-        <button
-          key={id}
-          onClick={() => handleChooseClick(id)}
-          className={`font-normal w-auto h-[44px] rounded-[30px] p-[10px_12px] gap-[4px] text-[16px] leading-[24px] tracking-[-1%] my-1 ${
-            review === id ? 'bg-[#FFFFFF] text-[#000000]' : 'bg-[#1B1E1F]'}`}
-        >
-          {emoji} {text}
-        </button>
-      ))}
-    </div>
-  );
-};
-ReviewButtons.displayName = 'ReviewButtons';
-
 
 import { useCallback, useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -187,12 +148,6 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     setOpenReview(!openReview);
   };
 
-  const handleChooseClick = (id: number) => { 
-    setReview(id);
-    setOpenReview(false);
-    setIsReviewClick(false);
-  };
-
   useEffect(() => {
     return () => {
       window.speechSynthesis.cancel();
@@ -236,12 +191,6 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
 
     <div className='absolute fixed bottom-0 inset-x-0 z-10'>
       <div className='flex justify-end items-center'>
-        <ReviewButtons
-          openReview={openReview}
-          review={review}
-          handleChooseClick={handleChooseClick}
-        />
-
         <div className='h-[178px] p-[0px_16px_14px_20px] flex items-center'>
           <div className='flex flex-col w-[44px] h-[164px]'>
             <button className='w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]'
@@ -386,12 +335,6 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
 
       <div className='absolute fixed bottom-0 inset-x-0 z-10'>
         <div className='flex justify-end items-center'>
-          <ReviewButtons
-            openReview={openReview}
-            review={review}
-            handleChooseClick={handleChooseClick}
-          />
-
           <div className='h-[178px] p-[0px_16px_14px_20px] flex items-center'>
             <div className='flex flex-col w-[44px] h-[164px]'>
               <button className='w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]'
