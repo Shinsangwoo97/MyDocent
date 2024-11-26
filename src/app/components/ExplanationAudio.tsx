@@ -45,7 +45,6 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
   const [workTitle, setWorkTitle] = useState<string | null>(null);
 
   
- 
   
   const toggleHighlight = () => {
     setHighlighted((prev) => !prev); // 버튼 클릭 시 하이라이트 상태 토글
@@ -67,7 +66,18 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     }
   };
 
-  
+  useEffect(() => {
+    if (isPlaying && synthRef.current) {
+      const utterance = synthRef.current;
+      utterance.text = segments[currentSegment]?.text || '';
+      utterance.rate = currentRate;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    if (segmentRefs.current[currentSegment]) {
+      segmentRefs.current[currentSegment]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [currentSegment, isPlaying, currentRate, segments]);
 
   const playSegmentFromIndex = (index: number, rate: number) => {
     if (index < segments.length) {
@@ -104,7 +114,13 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     setOpenReview(!openReview);
   };
 
-  
+
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+      currentUtteranceRef.current = null;
+    };
+  }, []);
 
   const handleScrollChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
@@ -151,28 +167,6 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     // `setSegments`에 설정
     setSegments(segments);
   }, [artworkData]);
-
-  useEffect(() => {
-    return () => {
-      window.speechSynthesis.cancel();
-      currentUtteranceRef.current = null;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (isPlaying && synthRef.current) {
-      const utterance = synthRef.current;
-      utterance.text = segments[currentSegment]?.text || '';
-      utterance.rate = currentRate;
-      window.speechSynthesis.speak(utterance);
-    }
-
-    if (segmentRefs.current[currentSegment]) {
-      segmentRefs.current[currentSegment]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  }, [currentSegment, isPlaying, currentRate, segments]);
-
-  if(!artworkData) return <p>작품 데이터를 불러오는 중입니다...</p>
 
   if(!segments) return (
     <div className='font-wanted'>
@@ -302,7 +296,9 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     </div>
   </div>
 );
+
   if(!workTitle) return <p>작품명 조회중...</p>
+
   if(!author) return <p>작가 조회중...</p>
 
   return (
