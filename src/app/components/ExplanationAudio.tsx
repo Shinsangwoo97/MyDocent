@@ -157,6 +157,22 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
       <div className='px-5'>
         <div className='max-h-[610px] overflow-y-scroll'>
           <h1>{workTitle}</h1>
+          <button 
+              onClick={handlePlayPause}>
+                  {isPlaying ? 
+                      <Image 
+                      src="/button/Pausebutton.svg" 
+                      alt="Loading Logo" 
+                      width={32} 
+                      height={32}/>
+                    :
+                      <Image 
+                      src="/button/Playbutton.svg" 
+                      alt="Loading Logo" 
+                      width={32} 
+                      height={32}/>
+                  }
+                </button>
           <div className={`mt-1 font-normal text-[20px] leading-[32px] tracking-[-0.02em]`}>
           {segments.map((segment, index) => (
               <p
@@ -237,22 +253,7 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
               </div>
             </div>
           </div>
-          <button 
-              onClick={handlePlayPause}>
-                  {isPlaying ? 
-                      <Image 
-                      src="/button/Pausebutton.svg" 
-                      alt="Loading Logo" 
-                      width={32} 
-                      height={32}/>
-                    :
-                      <Image 
-                      src="/button/Playbutton.svg" 
-                      alt="Loading Logo" 
-                      width={32} 
-                      height={32}/>
-                  }
-                </button>
+
           <div className='flex justify-center items-center h-full'>
             <button 
               className='mb-7 w-[335px] h-[48px] rounded-[30px] p-[12px] gap-[8px] bg-[#1B1E1F]'
