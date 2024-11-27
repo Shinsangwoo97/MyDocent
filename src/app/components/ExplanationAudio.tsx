@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
@@ -34,6 +34,73 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
   const [author, setAuthor] = useState<string | null>(null);
   const [workTitle, setWorkTitle] = useState<string | null>(null);
   const [text, setText] = useState<string | null>(null);  
+  const [highlighted, setHighlighted] = useState(true); // 하이라이트 상태 관리
+  const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const [currentSegment, setCurrentSegment] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const [rateIndex, setRateIndex] = useState(0); //속도 배열의 인덱스
+  const playbackRates = [1, 1.25, 1.5, 1.75, 2]; //속도 배열
+  const currentRate = playbackRates[rateIndex]; // 현재 재생 속도
+
+  const handleGoHome = useCallback(() => {
+    router.push('/');
+  }, [router]);
+
+  const toggleHighlight = () => {
+    setHighlighted((prev) => !prev); // 버튼 클릭 시 하이라이트 상태 토글
+  };
+
+  const playSegmentFromIndex = (index: number, rate: number) => {
+    if (index < segments.length) {
+      const utterance = new SpeechSynthesisUtterance(segments[index].text);
+      utterance.rate = rate;
+      currentUtteranceRef.current = utterance;
+
+      utterance.onend = () => {
+        playSegmentFromIndex(index + 1, rate);
+      };
+
+      setCurrentSegment(index);
+      window.speechSynthesis.speak(utterance);
+    } else {
+      setIsPlaying(false);
+      setCurrentSegment(0);
+      currentUtteranceRef.current = null;
+    }
+  };
+
+  const handleScrollChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    setCurrentSegment(value);
+    
+    // 구간 이동 시 자동 재생 로직 추가
+    if (isPlaying) {
+      window.speechSynthesis.cancel();
+      playSegmentFromIndex(value, currentRate);
+    }
+  };
+
+  const togglePlaybackRate = () => { // 재생 속도 순환 함수
+    const nextIndex = (rateIndex + 1) % playbackRates.length;
+    setRateIndex(nextIndex);
+
+    if (isPlaying) {
+      window.speechSynthesis.cancel();
+      playSegmentFromIndex(currentSegment, playbackRates[nextIndex]);
+    }
+  };
+
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      window.speechSynthesis.cancel();
+      setIsPlaying(false);
+      currentUtteranceRef.current = null;
+    } else {
+      playSegmentFromIndex(currentSegment, currentRate);
+      setIsPlaying(true);
+    }
+  };
 
   useEffect(() => {
     setAuthor(artworkData.author);
@@ -73,14 +140,6 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
     }
   }, [text]);
   
-  // 문단 단위로 나누고 배열로 변환
-  
-
-  
-  const handleGoHome = useCallback(() => {
-    router.push('/');
-  }, [router]);
-
   if(!text) return <p>Loading...</p>;
   return (
     <div className='font-wanted'>
@@ -102,7 +161,9 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
           {segments.map((segment, index) => (
               <p
                 key={index}
-                className="my-1 text-[#FFFFFF]"
+                className={`${
+                  highlighted ? (index === currentSegment ? 'my-1 text-[#FFFFFF]' : 'm-0 text-[#FFFFFF4D]') : 'my-1 text-[#FFFFFF]' 
+                }`}
               >
                 {segment.text}
               </p>
@@ -118,19 +179,35 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
           <div className='h-[178px] p-[0px_16px_14px_20px] flex items-center'>
             <div className='flex flex-col w-[44px] h-[164px]'>
               <button className='w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]'
-                >
+                onClick={toggleHighlight}> 
                 <Image 
                   src="/logo/pen.svg" 
                   alt="Loading Logo" 
                   width={32} 
                   height={32} 
                 />
-              </button>       
+              </button>      
+              <div className='my-4 flex justify-center w-[44px] h-[44px] rounded-[40px] p-[10px] gap-1 bg-[#151718] font-semibold text-[12px]'>
+                <button onClick={togglePlaybackRate}>
+                  {playbackRates[rateIndex]}
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
         <div className='bg-[#0C0D0F]'>
+        <input
+            type="range"
+            min="0"
+            max={segments.length - 1}
+            value={currentSegment}
+            onChange={handleScrollChange}
+            className="w-full h-[4px] rounded-lg appearance-none"
+            style={{
+              background: `linear-gradient(to right, white 0%, white ${(currentSegment / (segments.length - 1)) * 100}%, #484C52 ${(currentSegment / (segments.length - 1)) * 100}%, #484C52 100%)`,
+            }}
+          />
           <style jsx>{`
             input[type="range"]::-webkit-slider-thumb {
               -webkit-appearance: none;
@@ -159,6 +236,21 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
                 </div>
               </div>
               <div className='mt-2'>
+              <button onClick={handlePlayPause}>
+                  {isPlaying ? 
+                      <Image 
+                      src="/button/Pausebutton.svg" 
+                      alt="Loading Logo" 
+                      width={32} 
+                      height={32}/>
+                    :
+                      <Image 
+                      src="/button/Playbutton.svg" 
+                      alt="Loading Logo" 
+                      width={32} 
+                      height={32}/>
+                  }
+                </button>
               </div>
             </div>
           </div>
