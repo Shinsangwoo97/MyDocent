@@ -91,14 +91,18 @@ export default function OCRRequest() {
   return (
     <div className="flex flex-col items-center">
       {/* 캡처된 이미지 표시 */}
-      {imageData && <img src={imageData} alt="캡처된 이미지" />}
+      {imageData ? (<img src={imageData} alt="캡처된 이미지" />): (
+        <p>이미지를 캡처해주세요...</p>
+      )}
 
       {/* 추출된 전체 텍스트 표시 */}
-      {inferText && (
+      {inferText ? (
         <div className="mt-4">
           <h3 className="font-bold">추출된 텍스트:</h3>
           <p>{inferText}</p>
         </div>
+      ): (
+        <p>텍스트 추출 중...</p>
       )}
     </div>
   );
