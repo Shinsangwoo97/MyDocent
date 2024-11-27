@@ -91,16 +91,16 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
     }
   };
 
-  const handlePlayPause = () => {
-    if (isPlaying) {
-      window.speechSynthesis.cancel();
-      setIsPlaying(false);
-      currentUtteranceRef.current = null;
-    } else {
-      playSegmentFromIndex(currentSegment, currentRate);
-      setIsPlaying(true);
-    }
-  };
+  // const handlePlayPause = () => {
+  //   if (isPlaying) {
+  //     window.speechSynthesis.cancel();
+  //     setIsPlaying(false);
+  //     currentUtteranceRef.current = null;
+  //   } else {
+  //     playSegmentFromIndex(currentSegment, currentRate);
+  //     setIsPlaying(true);
+  //   }
+  // };
 
   useEffect(() => {
     setAuthor(artworkData.author);
@@ -158,7 +158,7 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
         <div className='max-h-[610px] overflow-y-scroll'>
           <h1>{workTitle}</h1>
           <button 
-              onClick={handlePlayPause}>
+              onClick={handleGoHome}>
                   {isPlaying ? 
                       <Image 
                       src="/button/Pausebutton.svg" 
