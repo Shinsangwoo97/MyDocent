@@ -1,4 +1,43 @@
 "use client";
+interface ButtonData {
+  id: number;
+  emoji: string;
+  text: string;
+}
+
+interface ReviewButtonsProps {
+  openReview: boolean;
+  review: number | null;
+  handleChooseClick: (id: number) => void;
+}
+
+const ReviewButtons: React.FC<ReviewButtonsProps> = ({ openReview, review, handleChooseClick }) => {
+  const buttons: ButtonData[] = [
+    { id: 1, emoji: '🤩', text: '재미있어요' },
+    { id: 2, emoji: '😮', text: '놀라워요' },
+    { id: 3, emoji: '🙂', text: '좋아요' },
+    { id: 4, emoji: '😓', text: '아쉬워요' },
+  ];
+
+  if (!openReview) return null;
+
+  return (
+    <div className='w-auto h-auto rounded-[30px] border border-[#2C3032] p-[10px] gap-[6px] bg-[#0C0D0F] flex flex-col'>
+      {buttons.map(({ id, emoji, text }) => (
+        <button
+          key={id}
+          onClick={() => handleChooseClick(id)}
+          className={`font-normal w-auto h-[44px] rounded-[30px] p-[10px_12px] gap-[4px] text-[16px] leading-[24px] tracking-[-1%] my-1 ${
+            review === id ? 'bg-[#FFFFFF] text-[#000000]' : 'bg-[#1B1E1F]'}`}
+        >
+          {emoji} {text}
+        </button>
+      ))}
+    </div>
+  );
+};
+ReviewButtons.displayName = 'ReviewButtons';
+
 
 import { useCallback, useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -28,7 +67,7 @@ interface AudioplayerProps {
   };
 }
 
-const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
+const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
   const router = useRouter();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSegment, setCurrentSegment] = useState<number>(0);
@@ -40,11 +79,45 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const [isReviewClick, setIsReviewClick] = useState(false);
   const [openReview, setOpenReview] = useState(false);
+  const [review, setReview] = useState<number | null>(null);
   const [highlighted, setHighlighted] = useState(true); // 하이라이트 상태 관리
   const [author, setAuthor] = useState<string | null>(null);
   const [workTitle, setWorkTitle] = useState<string | null>(null);
 
-  
+  useEffect(() => {
+    setAuthor(artworkData.author);
+    setWorkTitle(artworkData.workTitle);
+    const workIntro = artworkData.workIntro;
+    const authorIntro = artworkData.authorIntro;
+    const workBackground = artworkData.workBackground;
+    const appreciationPoint = artworkData.appreciationPoint;
+    const history = artworkData.history;
+
+    const text = `
+    작품소개
+    ${workIntro}
+    작가소개
+    ${authorIntro}
+    작품배경
+    ${workBackground}
+    감상포인트
+    ${appreciationPoint}
+    미술사
+    ${history}
+    `
+
+    // 문단 단위로 나누고 배열로 변환
+    const segments = text
+      .split(/\n+/) // 줄 바꿈을 기준으로 나누기 (한 문단씩 처리)
+      .map((sentence, idx): { text: string; startTime: number } => ({
+        text: sentence.trim(),
+        startTime: idx * 5, // 재생 시작 시간 설정 (예시로 5초 간격 설정)
+      }))
+      .filter((segment) => segment.text); // 빈 문장은 필터링
+
+    // `setSegments`에 설정
+    setSegments(segments);
+  }, [artworkData]);
   
   const toggleHighlight = () => {
     setHighlighted((prev) => !prev); // 버튼 클릭 시 하이라이트 상태 토글
@@ -114,6 +187,11 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     setOpenReview(!openReview);
   };
 
+  const handleChooseClick = (id: number) => { 
+    setReview(id);
+    setOpenReview(false);
+    setIsReviewClick(false);
+  };
 
   useEffect(() => {
     return () => {
@@ -132,42 +210,6 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
       playSegmentFromIndex(value, currentRate);
     }
   };
-
-  useEffect(() => {
-    setAuthor(artworkData.author);
-    setWorkTitle(artworkData.workTitle);
-    const workIntro = artworkData.workIntro;
-    const authorIntro = artworkData.authorIntro;
-    const workBackground = artworkData.workBackground;
-    const appreciationPoint = artworkData.appreciationPoint;
-    const history = artworkData.history;
-
-    const text = `
-    작품소개
-    ${workIntro}
-    작가소개
-    ${authorIntro}
-    작품배경
-    ${workBackground}
-    감상포인트
-    ${appreciationPoint}
-    미술사
-    ${history}
-    `
-
-    // 문단 단위로 나누고 배열로 변환
-    const segments = text
-      .split(/\n+/) // 줄 바꿈을 기준으로 나누기 (한 문단씩 처리)
-      .map((sentence, idx): { text: string; startTime: number } => ({
-        text: sentence.trim(),
-        startTime: idx * 5, // 재생 시작 시간 설정 (예시로 5초 간격 설정)
-      }))
-      .filter((segment) => segment.text); // 빈 문장은 필터링
-
-    // `setSegments`에 설정
-    setSegments(segments);
-  }, [artworkData]);
-
   if(!segments) return (
     <div className='font-wanted'>
     <button
@@ -194,6 +236,12 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
 
     <div className='absolute fixed bottom-0 inset-x-0 z-10'>
       <div className='flex justify-end items-center'>
+        <ReviewButtons
+          openReview={openReview}
+          review={review}
+          handleChooseClick={handleChooseClick}
+        />
+
         <div className='h-[178px] p-[0px_16px_14px_20px] flex items-center'>
           <div className='flex flex-col w-[44px] h-[164px]'>
             <button className='w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]'
@@ -296,9 +344,7 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     </div>
   </div>
 );
-
   if(!workTitle) return <p>작품명 조회중...</p>
-
   if(!author) return <p>작가 조회중...</p>
 
   return (
@@ -340,6 +386,12 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
 
       <div className='absolute fixed bottom-0 inset-x-0 z-10'>
         <div className='flex justify-end items-center'>
+          <ReviewButtons
+            openReview={openReview}
+            review={review}
+            handleChooseClick={handleChooseClick}
+          />
+
           <div className='h-[178px] p-[0px_16px_14px_20px] flex items-center'>
             <div className='flex flex-col w-[44px] h-[164px]'>
               <button className='w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]'
@@ -455,4 +507,4 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
   );
 };
 
-export default TTSWithScroll;
+export default ExplanationAudio;
