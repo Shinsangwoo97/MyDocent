@@ -235,8 +235,10 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
                   {author}
                 </div>
               </div>
-              {/* <div className='mt-2'> */}
-              <button onClick={handlePlayPause}>
+            </div>
+          </div>
+          <button 
+              onClick={handlePlayPause}>
                   {isPlaying ? 
                       <Image 
                       src="/button/Pausebutton.svg" 
@@ -251,10 +253,6 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
                       height={32}/>
                   }
                 </button>
-              {/* </div> */}
-            </div>
-          </div>
-
           <div className='flex justify-center items-center h-full'>
             <button 
               className='mb-7 w-[335px] h-[48px] rounded-[30px] p-[12px] gap-[8px] bg-[#1B1E1F]'
