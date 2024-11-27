@@ -1,8 +1,13 @@
 "use client";
 
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+
+interface TextSegment {
+  text: string;
+  startTime: number;
+}
 
 interface AudioplayerProps {
   artworkData: {
@@ -25,6 +30,7 @@ interface AudioplayerProps {
 
 const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
   const router = useRouter();
+  const [segments, setSegments] = useState<TextSegment[]>([]);
   const [author, setAuthor] = useState<string | null>(null);
   const [workTitle, setWorkTitle] = useState<string | null>(null);
   const [text, setText] = useState<string | null>(null);  
@@ -51,6 +57,25 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
     ${history}
     `);
   }, [artworkData]);
+
+  useEffect(() => {
+    if(text){
+      const segments = text
+      .split(/\n+/) // 줄 바꿈을 기준으로 나누기 (한 문단씩 처리)
+      .map((sentence, idx): { text: string; startTime: number } => ({
+        text: sentence.trim(),
+        startTime: idx * 5, // 재생 시작 시간 설정 (예시로 5초 간격 설정)
+      }))
+      .filter((segment) => segment.text); // 빈 문장은 필터링
+    
+    // `setSegments`에 설정
+    setSegments(segments);
+    }
+  }, [text]);
+  
+  // 문단 단위로 나누고 배열로 변환
+  
+
   
   const handleGoHome = useCallback(() => {
     router.push('/');
@@ -74,7 +99,14 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
         <div className='max-h-[610px] overflow-y-scroll'>
           <h1>{workTitle}</h1>
           <div className={`mt-1 font-normal text-[20px] leading-[32px] tracking-[-0.02em]`}>
-            {text}
+          {segments.map((segment, index) => (
+              <p
+                key={index}
+                className="my-1 text-[#FFFFFF]"
+              >
+                {segment.text}
+              </p>
+            ))}
             <span className="text-white text-[15px] mb-2">작품에 대해 더 궁금한 점이 있으신가요?</span>
 
           </div>
@@ -86,7 +118,6 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
           <div className='h-[178px] p-[0px_16px_14px_20px] flex items-center'>
             <div className='flex flex-col w-[44px] h-[164px]'>
               <button className='w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]'
-                // onClick={toggleHighlight}
                 >
                 <Image 
                   src="/logo/pen.svg" 
