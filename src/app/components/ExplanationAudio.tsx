@@ -40,7 +40,7 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const [isReviewClick, setIsReviewClick] = useState(false);
   const [openReview, setOpenReview] = useState(false);
-  const [highlighted, setHighlighted] = useState(true); // 하이라이트 상태 관리
+  // const [highlighted, setHighlighted] = useState(true); // 하이라이트 상태 관리
   const [author, setAuthor] = useState<string | null>(null);
   const [workTitle, setWorkTitle] = useState<string | null>(null);
 
@@ -79,9 +79,9 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
     setSegments(segments);
   }, [artworkData]);
   
-  const toggleHighlight = () => {
-    setHighlighted((prev) => !prev); // 버튼 클릭 시 하이라이트 상태 토글
-  };
+  // const toggleHighlight = () => {
+  //   setHighlighted((prev) => !prev); // 버튼 클릭 시 하이라이트 상태 토글
+  // };
 
   const handleGoHome = useCallback(() => {
     router.push('/');
@@ -154,23 +154,23 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
     };
   }, []);
 
-  const handleScrollChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
-    setCurrentSegment(value);
+  // const handleScrollChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = Number(e.target.value);
+  //   setCurrentSegment(value);
     
-    // 구간 이동 시 자동 재생 로직 추가
-    if (isPlaying) {
-      window.speechSynthesis.cancel();
-      playSegmentFromIndex(value, currentRate);
-    }
-  };
+  //   // 구간 이동 시 자동 재생 로직 추가
+  //   if (isPlaying) {
+  //     window.speechSynthesis.cancel();
+  //     playSegmentFromIndex(value, currentRate);
+  //   }
+  // };
  
   if(!workTitle) return <p>작품명 조회중...</p>
   if(!author) return <p>작가 조회중...</p>
   if(!segments) return <p>작품 정보를 불러오는 중입니다...</p>
   // if(!currentSegment) return <p>현재 세그먼트를 불러오는 중입니다...</p>
   if(!playbackRates) return <p>재생 속도를 불러오는 중입니다...</p>
-  if(!highlighted) return <p>하이라이트 상태를 불러오는 중입니다...</p>
+  // if(!highlighted) return <p>하이라이트 상태를 불러오는 중입니다...</p>
   if(!segmentRefs) return <p>세그먼트 레퍼런스를 불러오는 중입니다...</p>
 
   return (
@@ -196,9 +196,10 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
                 ref={(el) => {
                   segmentRefs.current[index] = el;
                 }}
-                className={`${
-                  highlighted ? (index === currentSegment ? 'my-1 text-[#FFFFFF]' : 'm-0 text-[#FFFFFF4D]') : 'my-1 text-[#FFFFFF]' 
-                }`}
+                // className={`${
+                //   highlighted ? (index === currentSegment ? 'my-1 text-[#FFFFFF]' : 'm-0 text-[#FFFFFF4D]') : 'my-1 text-[#FFFFFF]' 
+                // }`}
+                className={'m-0 text-[#FFFFFF]'}
               >
                 {segment.text}
               </p>
@@ -215,7 +216,8 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
           <div className='h-[178px] p-[0px_16px_14px_20px] flex items-center'>
             <div className='flex flex-col w-[44px] h-[164px]'>
               <button className='w-[44px] h-[44px] rounded-[40px] border border-[#2C3032] p-[10px] gap-1 bg-[#151718]'
-                onClick={toggleHighlight}>
+                // onClick={toggleHighlight}
+                >
                 <Image 
                   src="/logo/pen.svg" 
                   alt="Loading Logo" 
@@ -255,7 +257,7 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
         </div>
 
         <div className='bg-[#0C0D0F]'>
-          <input
+          {/* <input
             type="range"
             min="0"
             max={segments.length - 1}
@@ -265,7 +267,7 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
             style={{
               background: `linear-gradient(to right, white 0%, white ${(currentSegment / (segments.length - 1)) * 100}%, #484C52 ${(currentSegment / (segments.length - 1)) * 100}%, #484C52 100%)`,
             }}
-          />
+          /> */}
           <style jsx>{`
             input[type="range"]::-webkit-slider-thumb {
               -webkit-appearance: none;
