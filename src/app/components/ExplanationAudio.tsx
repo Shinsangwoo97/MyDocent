@@ -168,7 +168,7 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
   if(!workTitle) return <p>작품명 조회중...</p>
   if(!author) return <p>작가 조회중...</p>
   if(!segments) return <p>작품 정보를 불러오는 중입니다...</p>
-  if(!currentSegment) return <p>현재 세그먼트를 불러오는 중입니다...</p>
+  // if(!currentSegment) return <p>현재 세그먼트를 불러오는 중입니다...</p>
   if(!playbackRates) return <p>재생 속도를 불러오는 중입니다...</p>
   if(!highlighted) return <p>하이라이트 상태를 불러오는 중입니다...</p>
   if(!segmentRefs) return <p>세그먼트 레퍼런스를 불러오는 중입니다...</p>
