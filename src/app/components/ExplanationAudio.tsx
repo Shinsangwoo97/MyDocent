@@ -174,7 +174,7 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
         </div>
       </div>
 
-      <div className='absolute fixed bottom-0 inset-x-0 z-10'>
+      <div className='absolute zlndex:1 fixed bottom-0 inset-x-0 z-10'>
         <div className='flex justify-end items-center'>
           <div className='h-[178px] p-[0px_16px_14px_20px] flex items-center'>
             <div className='flex flex-col w-[44px] h-[164px]'>
@@ -235,7 +235,7 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
                   {author}
                 </div>
               </div>
-              <div className='mt-2'>
+              {/* <div className='mt-2'> */}
               <button onClick={handlePlayPause}>
                   {isPlaying ? 
                       <Image 
@@ -251,7 +251,7 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
                       height={32}/>
                   }
                 </button>
-              </div>
+              {/* </div> */}
             </div>
           </div>
 
