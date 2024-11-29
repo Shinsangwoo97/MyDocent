@@ -91,16 +91,16 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
     }
   };
 
-  // const handlePlayPause = () => {
-  //   if (isPlaying) {
-  //     window.speechSynthesis.cancel();
-  //     setIsPlaying(false);
-  //     currentUtteranceRef.current = null;
-  //   } else {
-  //     playSegmentFromIndex(currentSegment, currentRate);
-  //     setIsPlaying(true);
-  //   }
-  // };
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      window.speechSynthesis.cancel();
+      setIsPlaying(false);
+      currentUtteranceRef.current = null;
+    } else {
+      playSegmentFromIndex(currentSegment, currentRate);
+      setIsPlaying(true);
+    }
+  };
 
   useEffect(() => {
     setAuthor(artworkData.author);
@@ -157,22 +157,6 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
       <div className='px-5'>
         <div className='max-h-[610px] overflow-y-scroll'>
           <h1>{workTitle}</h1>
-          <button 
-              onClick={handleGoHome}>
-                  {isPlaying ? 
-                      <Image 
-                      src="/button/Pausebutton.svg" 
-                      alt="Loading Logo" 
-                      width={32} 
-                      height={32}/>
-                    :
-                      <Image 
-                      src="/button/Playbutton.svg" 
-                      alt="Loading Logo" 
-                      width={32} 
-                      height={32}/>
-                  }
-                </button>
           <div className={`mt-1 font-normal text-[20px] leading-[32px] tracking-[-0.02em]`}>
           {segments.map((segment, index) => (
               <p
@@ -251,6 +235,21 @@ const ExplanationAudio: React.FC<AudioplayerProps> = ({ artworkData }) => {
                   {author}
                 </div>
               </div>
+              <button onClick={handlePlayPause}>
+                  {isPlaying ? 
+                      <Image 
+                      src="/button/Pausebutton.svg" 
+                      alt="Loading Logo" 
+                      width={32} 
+                      height={32}/>
+                    :
+                      <Image 
+                      src="/button/Playbutton.svg" 
+                      alt="Loading Logo" 
+                      width={32} 
+                      height={32}/>
+                  }
+                </button>
             </div>
           </div>
 
