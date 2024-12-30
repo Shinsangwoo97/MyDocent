@@ -142,7 +142,8 @@ export default function Home() {
     // 로컬 스토리지에 requestData를 저장하고 로딩 페이지로 이동
     localStorage.setItem('requestData', JSON.stringify(requestData));
     localStorage.setItem('uuid', requestData.uuid);
-    router.push('/main/loading');
+    // router.push('/main/loading');
+    router.push('/main/test');
   };
 
   const [buttonData, setButtonData] = useState<ButtonData[]>([

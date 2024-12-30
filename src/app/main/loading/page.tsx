@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useEffect } from 'react';
+import sendWebViewData  from '@/lib/send_webview_data';
 
 export default function Loading() {
   const router = useRouter();
@@ -29,10 +30,12 @@ export default function Loading() {
               const descriptionResponse = await fetch(`/api/description/${uuid}`);
               const descriptionData = await descriptionResponse.json();
   
+              sendWebViewData("data", descriptionData);
+
               // 세션 스토리지에 데이터 저장
-              sessionStorage.setItem('artworkData', JSON.stringify(descriptionData));
+              // sessionStorage.setItem('artworkData', JSON.stringify(descriptionData));
   
-              router.push(`/main/player?id=${uuid}`);
+              // router.push(`/main/player?id=${uuid}`);
             } else {
               console.error("응답에서 uuid를 찾을 수 없습니다.");
               router.push('/main/error'); 

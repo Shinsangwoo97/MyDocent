@@ -4,6 +4,7 @@ import { RowDataPacket } from 'mysql2';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { user_id, keyword, text, uuid } = req.body;
+  
   const ai_api_key = process.env.NEXT_PUBLIC_AI_API;
   const ai_role = process.env.NEXT_PUBLIC_AI_ROLE;
 
