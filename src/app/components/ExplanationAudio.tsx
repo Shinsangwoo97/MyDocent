@@ -25,7 +25,7 @@ interface AudioplayerProps {
     history: string; 
     source: string; 
     created_at: string; 
-    keyword: string[];   // JSON 배열을 파싱해서 사용할 때
+    keyword: string[];   //JSON 배열을 파싱해서 사용할 때
     playlist_id: number;
   };
 }
@@ -40,13 +40,9 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
   const synthRef = useRef<SpeechSynthesisUtterance | null>(null);
   const segmentRefs = useRef<(HTMLParagraphElement | null)[]>([]);
   const currentUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-  const [isReviewClick, setIsReviewClick] = useState(false);
-  const [openReview, setOpenReview] = useState(false);
-  const [review, setReview] = useState<number | null>(null);
   const [highlighted, setHighlighted] = useState(true); // 하이라이트 상태 관리
   const [author, setAuthor] = useState<string | null>(null);
   const [workTitle, setWorkTitle] = useState<string | null>(null);
-  const [isScrolled, setIsScrolled] = useState(false); // 스크롤 여부 상태
 
   useEffect(() => {
     setAuthor(artworkData.author);
@@ -83,9 +79,9 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     setSegments(segments);
   }, [artworkData]);
   
-  const toggleHighlight = () => {
-    setHighlighted((prev) => !prev); // 버튼 클릭 시 하이라이트 상태 토글
-  };
+
+  // 버튼 클릭 시 하이라이트 상태 토글
+  const toggleHighlight = () => setHighlighted((prev) => !prev);
 
   const handleGoHome = () => {
     router.push('/');
@@ -156,11 +152,6 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
     }
   };
 
-  const handleReviewClick = () => {
-    setIsReviewClick(!isReviewClick);
-    setOpenReview(!openReview);
-  };
-
   useEffect(() => {
     return () => {
       window.speechSynthesis.cancel();
@@ -178,6 +169,17 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
       playSegmentFromIndex(value, currentRate);
     }
   };
+
+  const segmentListRef = useRef<HTMLDivElement>(null);
+  const [hasScroll, setHasScroll] = useState(false);
+
+  useEffect(() => {
+    // 스크롤 여부 감지
+    if (segmentListRef.current) {
+      const { scrollHeight, clientHeight } = segmentListRef.current;
+      setHasScroll(scrollHeight > clientHeight);
+    }
+  }, [segments]);
   
   return (
     <div className='font-wanted h-screen flex flex-col'>
@@ -192,20 +194,16 @@ const TTSWithScroll: React.FC<AudioplayerProps> = ({ artworkData }) => {
 
       <div className='fixed bottom-0 inset-x-0 z-10'>
         <Buttons
-          isPlaying={isPlaying}
           togglePlaybackRate={togglePlaybackRate}
+          highlighted={highlighted}
           toggleHighlight={toggleHighlight}
-          currentRate={playbackRates[rateIndex]}
           rateIndex={rateIndex}
-          handlePlayPause={handlePlayPause}
           playbackRates={playbackRates}
-          handleReviewClick={handleReviewClick}
-          isReviewClick={isReviewClick}
         />
 
         <AudioControl
           currentSegment={currentSegment}
-          segmentsLength={segments.length} // 배열 길이만 전달
+          segmentsLength={segments.length} //배열 길이만 전달
           handleScrollChange={handleScrollChange}
           workTitle={workTitle}
           author={author}

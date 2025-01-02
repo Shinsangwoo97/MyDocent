@@ -113,8 +113,11 @@ export default function Mypage() {
   return (
     <>
       {showAlert && (
-        <div className="absolute min-w-[166px] h-[44px] top-[74px] left-[104.5px] rounded-[30px] border border-[#2C3032] p-[10px_16px] gap-[6px] bg-[#1B1E1F] text-[#FFFFFF]">
-          이름을 수정했어요
+        <div
+          className="fixed top-[74px] left-[95.5px] w-[183px] h-[44px] rounded-[30px] border border-[#2c3032] 
+                    bg-[#1b1e1f] text-white font-['WantedSans'] flex items-center justify-center">
+            <Image src="/mypage/check-24.svg" alt="Check Icon" width={18} height={18} className="mr-[2px]"/>
+              이름을 수정했어요
         </div>
       )}
       <button 
